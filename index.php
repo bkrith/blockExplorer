@@ -1,8 +1,8 @@
 
 <?php
 
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
+error_reporting(0);
+ini_set('display_errors', 0);
 ini_set("allow_url_fopen", 1);
 
 // Kickstart the framework
@@ -14,6 +14,12 @@ if ((float)PCRE_VERSION<7.9)
 // Load configuration
 $f3->config('config.ini');
 
+$f3->set('ONERROR',function($f3){
+	echo \Template::instance()->render('header.tpl');
+	echo \Template::instance()->render('topbar.tpl');
+	echo \Template::instance()->render('404.tpl');
+	echo \Template::instance()->render('footer.tpl');
+});
 
 $f3->config('routes.ini');
 

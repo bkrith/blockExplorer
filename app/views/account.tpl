@@ -29,8 +29,8 @@
                     <td class="mdl-data-table__cell--non-numeric">{{ @account.description }}</td>
                 </tr>
                 <tr>
-                    <td class="mdl-data-table__cell--non-numeric blockThTable">No. Transactions</td>
-                    <td class="mdl-data-table__cell--non-numeric">{{ @account.countTransactions }}</td>
+                    <td class="mdl-data-table__cell--non-numeric blockThTable">Transactions</td>
+                    <td class="mdl-data-table__cell--non-numeric">Last {{ @account.countTransactions }}</td>
                 </tr>
                 <tr>
                     <td class="mdl-data-table__cell--non-numeric blockThTable">Total Received</td>

@@ -44,7 +44,7 @@
         // Util Functions
 
         private function getTransactionsCount($account) {
-            $count = count(json_decode(file_get_contents($this->wallet . '/burst?requestType=getAccountTransactionIds&account=' . $account), true)['transactionIds']);
+            $count = count(json_decode(file_get_contents($this->wallet . '/burst?requestType=getAccountTransactionIds&firstIndex=0&lastIndex=99&account=' . $account), true)['transactionIds']);
 
             return $count;
         }
@@ -56,9 +56,8 @@
         }
 
         private function getBalanceInfos($account) {
-            $count = $this->getTransactionsCount($account);
-            $transactions = json_decode(file_get_contents($this->wallet . '/burst?requestType=getAccountTransactions&account=' . $account . '&firstIndex=0&lastIndex=' . $count), true);
-            
+            $transactions = json_decode(file_get_contents($this->wallet . '/burst?requestType=getAccountTransactions&firstIndex=0&lastIndex=99&account=' . $account . '&firstIndex=0&lastIndex=' . $count), true);
+            $count = count($transactions['transactions']);
             $totalReceive = 0;
             $totalSent = 0;
 

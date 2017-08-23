@@ -1,0 +1,166 @@
+/*
+Block Explorer - Burstcoin block explorer 
+Copyright (C) 2017 Vassilis 
+
+This program is free software: you can redistribute it and/or modify it under the terms of 
+the GNU General Public License as published by the Free Software Foundation, either version 
+3 of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
+without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
+See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with this program. 
+If not, see <http://www.gnu.org/licenses/>.
+*/
+
+body {
+    color: #333 !important;
+}
+
+.mdl-layout__header-row {
+    padding-left: 10px !important;
+}
+
+i {
+    vertical-align: middle;
+}
+
+a {
+    text-decoration: none;
+}
+
+table td a {
+    color: rgba(95, 156, 199, 1);
+}
+
+table th {
+    font-size: 13px !important;
+}
+
+.mdl-layout-title a {
+    color: #eee;
+}
+
+.mdl-layout-title i {
+    font-size: 50px;
+}
+
+.mdl-layout__header {
+    background-color: #475057 !important;
+}
+
+.tableDiv {
+    padding: 20px;
+}
+
+.mdl-data-table {
+    table-layout: fixed;
+    width: 100%;
+}
+
+.mdl-data-table  td, 
+.mdl-data-table th {
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    -o-text-overflow: ellipsis;
+    text-align: left;
+}
+
+.alignCenter {
+    text-align: center !important;
+}
+
+.heightThTable {
+    width: 120px !important;
+}
+
+.transactionsThTable {
+    width: 120px !important;
+}
+
+.feeThTable {
+    width: 80px !important;
+}
+
+.payloadThTable {
+    width: 120px !important;
+}
+
+.baseTargetThTable {
+    width: 120px !important;
+}
+
+.blockThTable {
+    width: 280px !important;
+    font-weight: bold;
+}
+
+.bold a {
+    font-weight: bold;
+}
+
+.boldText {
+    font-weight: bold;
+}
+
+.greenText {
+    color: green;
+}
+
+.redText {
+    color: red;
+}
+
+.leftTable {
+    width: 200px !important;
+    float: left;
+}
+
+.rightTable {
+    width: calc(100% - 280px) !important;
+    float: right;
+}
+
+.floatRight {
+    float: right;
+}
+
+.floatLeft {
+    float: left;
+}
+
+.paginationDiv {
+    padding: 20px;
+}
+
+.paginationDiv button {
+    font-size: 12px !important;
+    border: 1px solid #eee;
+    width: 20px !important; 
+}
+
+footer {
+    background-color: #475057 !important;
+    min-height: 50px;
+    width: 100%;
+    vertical-align: middle;
+}
+
+.footerAlignRight {
+    text-align: right;
+    color: #eee;
+    font-size: 12px;
+    line-height: 25px;
+    padding-right: 20px;
+}
+
+.footerAlignLeft {
+    text-align: left;
+    color: #eee;
+    font-size: 12px;
+    line-height: 50px;
+    padding-left: 20px;
+}

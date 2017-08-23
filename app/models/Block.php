@@ -1,30 +1,14 @@
-<!--
-Block Explorer - Burstcoin block explorer 
-Copyright (C) 2017 Vassilis 
-
-This program is free software: you can redistribute it and/or modify it under the terms of 
-the GNU General Public License as published by the Free Software Foundation, either version 
-3 of the License, or (at your option) any later version.
-
-This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
-without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
-See the GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License along with this program. 
-If not, see <http://www.gnu.org/licenses/>.
-
-Make a donation to the author Vassilis ( BURST-YY7Z-K8KK-E2B9-AKQCQ )
-
--->
 
 <?php
 
     class Block {
 
         private $wallet = '';
+        private $timeSeed = 0;
 
         public function __construct($f3) {
             $this->wallet = $f3->get('wallet');
+            $this->timeSeed = $f3->get('timeSeed');
         }
 
         public function all($page) {
@@ -104,7 +88,7 @@ Make a donation to the author Vassilis ( BURST-YY7Z-K8KK-E2B9-AKQCQ )
         }
 
         private function formatBlock($block) {
-            $block['timestamp'] = date('Y-m-d H:i:s', 1407729600 + $block['timestamp']);
+            $block['timestamp'] = date('Y-m-d H:i:s', $this->timeSeed + $block['timestamp']);
             $block['totalAmountNQT'] = number_format($block['totalAmountNQT'] / 100000000, 2, '.', "'");
             $block['totalFeeNQT'] = $block['totalFeeNQT'] / 100000000;
             $block['blockReward'] = number_format($block['blockReward'], 0, '.', "'");
@@ -122,7 +106,7 @@ Make a donation to the author Vassilis ( BURST-YY7Z-K8KK-E2B9-AKQCQ )
             foreach($transactions as $key => $value) {
                 $transactions[$key]['amountNQT'] = number_format($value['amountNQT'] / 100000000, 2, '.', "'");
                 $transactions[$key]['feeNQT'] = $value['feeNQT'] / 100000000;
-                $transactions[$key]['timestamp'] = date('Y-m-d H:i:s', 1407729600 + $value['timestamp']);
+                $transactions[$key]['timestamp'] = date('Y-m-d H:i:s', $this->timeSeed + $value['timestamp']);
                 if ($transactions[$key]['amountNQT'] <= 0) $transactions[$key]['amountNQT'] = 0;
                 if ($transactions[$key]['feeNQT'] <= 0) $transactions[$key]['feeNQT'] = 0;
             }

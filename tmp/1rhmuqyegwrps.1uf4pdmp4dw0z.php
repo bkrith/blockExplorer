@@ -3,7 +3,7 @@
     <header class="mdl-layout__header">
         <div class="mdl-layout__header-row">
             <!-- Title -->
-            <span class="mdl-layout-title"><a href="{{ @BASE }}"><i class="material-icons">view_quilt</i>Burst Explorer</a></span>
+            <span class="mdl-layout-title"><a href="<?= $BASE ?>"><i class="material-icons">view_quilt</i>Burst Explorer</a></span>
             <div class="mdl-layout-spacer"></div>
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--expandable
                 mdl-textfield--floating-label mdl-textfield--align-right">
@@ -37,10 +37,10 @@
                         console.log(search, this.responseText.trim());
                         if (search == this.responseText.trim()) {
                             console.log('block exist');
-                            window.location.href = '{{ @BASE }}/block/' + search;
+                            window.location.href = '<?= $BASE ?>/block/' + search;
                         }
                         else{
-                            xhttp[1].open("GET", "{{ @BASE }}/search/height/" + search);
+                            xhttp[1].open("GET", "<?= $BASE ?>/search/height/" + search);
                             xhttp[1].send();
                         }
                     }
@@ -51,10 +51,10 @@
                         console.log(search, this.responseText.trim());
                         if (search == this.responseText.trim()) {
                             console.log('height exist');
-                            window.location.href = '{{ @BASE }}/height/' + search;
+                            window.location.href = '<?= $BASE ?>/height/' + search;
                         }
                         else{
-                            xhttp[2].open("GET", "{{ @BASE }}/search/account/" + search);
+                            xhttp[2].open("GET", "<?= $BASE ?>/search/account/" + search);
                             xhttp[2].send();
                         }
                     }
@@ -65,10 +65,10 @@
                         console.log(search, this.responseText.trim());
                         if (search == this.responseText.trim()) {
                             console.log('account exist');
-                            window.location.href = '{{ @BASE }}/account/' + search;
+                            window.location.href = '<?= $BASE ?>/account/' + search;
                         }
                         else{
-                            xhttp[3].open("GET", "{{ @BASE }}/search/transaction/" + search);
+                            xhttp[3].open("GET", "<?= $BASE ?>/search/transaction/" + search);
                             xhttp[3].send();
                         }
                     }
@@ -79,16 +79,16 @@
                         console.log(search, this.responseText.trim());
                         if (search == this.responseText.trim()) {
                             console.log('transaction exist');
-                            window.location.href = '{{ @BASE }}/transaction/' + search;
+                            window.location.href = '<?= $BASE ?>/transaction/' + search;
                         }
                         else {
                             console.log(search, this.responseText.trim());
-                            window.location.href = '{{ @BASE }}/not-found';
+                            window.location.href = '<?= $BASE ?>/not-found';
                         }
                     }
                 }
 
-                xhttp[0].open("GET", "{{ @BASE }}/search/block/" + search);
+                xhttp[0].open("GET", "<?= $BASE ?>/search/block/" + search);
                 xhttp[0].send();
             }
 

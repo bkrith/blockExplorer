@@ -63,7 +63,7 @@
 
             if ($transactions['transactions']) {
                 foreach($transactions['transactions'] as $key => $value) {
-                    if ($transactions['transactions'][$key]['sender'] == $account) {
+                    if ($transactions['transactions'][$key]['sender'] == $account || $transactions['transactions'][$key]['senderRS'] == $account) {
                         $totalSent += $value['amountNQT'];
                         $value['move'] = 'red';
                     }

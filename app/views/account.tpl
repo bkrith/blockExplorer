@@ -34,14 +34,14 @@
                 </tr>
                 <tr>
                     <td class="mdl-data-table__cell--non-numeric blockThTable">Total Received</td>
-                    <td class="mdl-data-table__cell--non-numeric">{{ @account.totalReceive }} Burst</td>
+                    <td class="mdl-data-table__cell--non-numeric">{{ @account.totalReceive }} Burst (last {{ @account.countTransactions }} transactions)</td>
                 </tr>
                 <tr>
                     <td class="mdl-data-table__cell--non-numeric blockThTable">Total Sent</td>
-                    <td class="mdl-data-table__cell--non-numeric">{{ @account.totalSent }} Burst</td>
+                    <td class="mdl-data-table__cell--non-numeric">{{ @account.totalSent }} Burst (last {{ @account.countTransactions }} transactions)</td>
                 </tr>
                 <tr>
-                    <td class="mdl-data-table__cell--non-numeric blockThTable">Ballance</td>
+                    <td class="mdl-data-table__cell--non-numeric blockThTable">Balance</td>
                     <td class="mdl-data-table__cell--non-numeric">{{ @account.effectiveBalanceNXT }} Burst</td>
                 </tr>
             </tbody>
@@ -96,7 +96,7 @@
                                     <td class="mdl-data-table__cell--non-numeric greenText boldText"><i class="material-icons">keyboard_arrow_right</i>{{ @transaction.amountNQT }} Burst</td>
                                 </true>
                                 <false>
-                                    <td class="mdl-data-table__cell--non-numeric redText boldText"><i class="material-icons">keyboard_arrow_left</i> {{ @transaction.amountNQT }} Burst</td>
+                                    <td class="mdl-data-table__cell--non-numeric redText boldText"><i class="material-icons">keyboard_arrow_left</i>{{ @transaction.amountNQT }} Burst</td>
                                 </false>
                             </check>
                             <td class="mdl-data-table__cell--non-numeric"><a href="{{ @BASE }}/account/{{ @transaction.recipient }}">{{ @transaction.recipientRS }}</a></td>

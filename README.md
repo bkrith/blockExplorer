@@ -1,12 +1,3 @@
-# Block Explorer for burstcoin network
-
-# based on wallet api
-
-# If you like it make a donation BURST-YY7Z-K8KK-E2B9-AKQCQ
-
-
-
-
 # Block Explorer
 
 Block explorer for burstcoin network based on wallet api
@@ -34,7 +25,7 @@ In config.ini file you can set your global variables.
 
 ## Authors
 
-* **Vassilis**
+* **Vassilis** - If you like it make a donation BURST-YY7Z-K8KK-E2B9-AKQCQ
 
 ## License
 

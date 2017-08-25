@@ -149,3 +149,12 @@ footer {
     line-height: 50px;
     padding-left: 20px;
 }
+
+.smallCol {
+    width: 20px !important;
+}
+
+.greenText i,
+.redText i {
+    font-size: 17px !important;
+}

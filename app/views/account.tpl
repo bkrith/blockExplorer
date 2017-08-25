@@ -91,14 +91,19 @@
                         <tr>
                             <td class="mdl-data-table__cell--non-numeric"><a href="{{ @BASE }}/transaction/{{ @transaction.transaction }}">{{ @transaction.transaction }}</a></td>
                             <td class="mdl-data-table__cell--non-numeric"><a href="{{ @BASE }}/account/{{ @transaction.sender }}">{{ @transaction.senderRS }}</a></td>
-                            <check if = "{{ @transaction.move == 'green' }}">
-                                <true>
-                                    <td class="mdl-data-table__cell--non-numeric greenText boldText"><i class="material-icons">keyboard_arrow_right</i>{{ @transaction.amountNQT }} Burst</td>
-                                </true>
-                                <false>
-                                    <td class="mdl-data-table__cell--non-numeric redText boldText"><i class="material-icons">keyboard_arrow_left</i>{{ @transaction.amountNQT }} Burst</td>
-                                </false>
-                            </check>
+                            <td class="mdl-data-table__cell--non-numeric {{ @transaction.move }} boldText">
+                                <div class="floatLeft">
+                                    <check if = "{{ @transaction.move == 'greenText' }}">
+                                        <i class="material-icons">add</i>
+                                    </check>
+                                    <check if = "{{ @transaction.move == 'redText' }}">
+                                        <i class="material-icons">remove</i>
+                                    </check>
+                                </div>
+                                <div class="floatRight">
+                                    {{ @transaction.amountNQT }} Burst
+                                </div>
+                            </td>
                             <td class="mdl-data-table__cell--non-numeric"><a href="{{ @BASE }}/account/{{ @transaction.recipient }}">{{ @transaction.recipientRS }}</a></td>
                             <td class="mdl-data-table__cell--non-numeric">{{ @transaction.timestamp }}</td>
                         </tr>

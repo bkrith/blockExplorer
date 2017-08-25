@@ -5,6 +5,9 @@
             <!-- Title -->
             <span class="mdl-layout-title"><a href="{{ @BASE }}"><i class="material-icons">view_quilt</i>Burst Explorer</a></span>
             <div class="mdl-layout-spacer"></div>
+            <nav class="mdl-navigation mdl-layout--large-screen-only">
+                <a class="mdl-navigation__link" href="{{ @BASE }}/blocks">Blocks</a>
+            </nav>
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--expandable
                 mdl-textfield--floating-label mdl-textfield--align-right">
                 <label class="mdl-button mdl-js-button mdl-button--icon"

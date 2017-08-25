@@ -32,10 +32,10 @@
                     <td class="mdl-data-table__cell--non-numeric blockThTable">Generator</td>
                     <td class="mdl-data-table__cell--non-numeric"><a href="{{ @BASE }}/account/{{ @block.generator }}">{{ @block.generatorRS }}</a></td>
                 </tr>
-                <!-- tr>
-                    <td class="mdl-data-table__cell- -non-numeric blockThTable">Block Generation Time</td>
-                    <td class="mdl-data-table__cell- -non-numeric">-</td>
-                </tr -->
+                <tr>
+                    <td class="mdl-data-table__cell--non-numeric blockThTable">Block Generation Time</td>
+                    <td class="mdl-data-table__cell--non-numeric">{{ @block.generationTime }}</td>
+                </tr>
                 <tr>
                     <td class="mdl-data-table__cell--non-numeric blockThTable">Base Target</td>
                     <td class="mdl-data-table__cell--non-numeric">{{ @block.baseTarget }}</td>

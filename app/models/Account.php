@@ -63,13 +63,16 @@
 
             if ($transactions['transactions']) {
                 foreach($transactions['transactions'] as $key => $value) {
-                    if ($transactions['transactions'][$key]['sender'] == $account || $transactions['transactions'][$key]['senderRS'] == $account) {
+                    if ($value['amountNQT'] == 0) {
+                        $value['move'] = '';
+                    }
+                    else if ($transactions['transactions'][$key]['sender'] == $account || $transactions['transactions'][$key]['senderRS'] == $account) {
                         $totalSent += $value['amountNQT'];
-                        $value['move'] = 'red';
+                        $value['move'] = 'redText';
                     }
                     else {
                         $totalReceive += $value['amountNQT'];
-                        $value['move'] = 'green';
+                        $value['move'] = 'greenText';
                     }
 
                     $transactions['transactions'][$key] = $this->formatTransaction($value);

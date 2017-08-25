@@ -1,8 +1,8 @@
 
 <?php
 
-error_reporting(E_ALL); // for reporting all errors set E_ALL
-ini_set('display_errors', 1); // for reporting all errors set 1
+error_reporting(0); // for reporting all errors set E_ALL
+ini_set('display_errors', 0); // for reporting all errors set 1
 ini_set("allow_url_fopen", 1);
 
 // Kickstart the framework

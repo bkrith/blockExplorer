@@ -80,7 +80,7 @@
         }
 
         public function getBlocksForPool() {
-            $this->blocks = json_decode(file_get_contents($this->wallet . '/burst?requestType=getBlocks&firstIndex=0&lastIndex=50'), true);
+            $this->blocks = json_decode(file_get_contents($this->wallet . '/burst?requestType=getBlocks&firstIndex=0&lastIndex=10'), true);
 
             return $this->formatBlocks(true);
         }
@@ -100,7 +100,7 @@
             $block['totalAmountNQT'] = number_format($block['totalAmountNQT'] / 100000000, 2, '.', "'");
             $block['totalFeeNQT'] = $block['totalFeeNQT'] / 100000000;
             if ($single || $forPools) {
-                $block['generationTime'] = $this->findBlockTimestamp($block['height'] - 1);
+                $block['generationTime'] = $this->findBlockTimestamp($block['height'] - 1, $single);
                 $block['generationTime'] = date('i:s', $block['timestamp'] - $block['generationTime']);
 
                 $account = new Account($this->f3);
@@ -129,9 +129,14 @@
             return $block;
         }
 
-        private function findBlockTimestamp($height) {
-            foreach($this->blocks['blocks'] as $block) {
-                if ($block['height'] == $height) return $block['timestamp'];
+        private function findBlockTimestamp($height, $single) {
+            if ($single) {
+                return $this->justByHeight($height)['timestamp']; 
+            }
+            else {
+                foreach($this->blocks['blocks'] as $block) {
+                    if ($block['height'] == $height) return $block['timestamp'];
+                }
             }
 
             return 0;

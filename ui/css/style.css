@@ -3,14 +3,6 @@ body {
     color: #333 !important;
 }
 
-.mdl-layout__header-row {
-    padding-left: 10px !important;
-}
-
-i {
-    vertical-align: middle;
-}
-
 a {
     text-decoration: none;
 }
@@ -40,12 +32,12 @@ table th {
 }
 
 .mdl-data-table {
-    table-layout: fixed;
     width: 100%;
+    white-space: normal;
 }
 
-.mdl-data-table  td, 
-.mdl-data-table th {
+.mdl-data-tables-test  td, 
+.mdl-data-tables-test th {
     width: 100%;
     white-space: nowrap;
     overflow: hidden;
@@ -54,28 +46,28 @@ table th {
     text-align: left;
 }
 
-.alignCenter {
+th.alignCenter {
     text-align: center !important;
 }
 
-.heightThTable {
-    width: 120px !important;
+th.heightThTable {
+    min-width: 120px !important;
 }
 
-.transactionsThTable {
-    width: 120px !important;
+th.transactionsThTable {
+    min-width: 120px !important;
 }
 
-.feeThTable {
-    width: 80px !important;
+th.feeThTable {
+    min-width: 80px !important;
 }
 
-.payloadThTable {
-    width: 120px !important;
+th.payloadThTable {
+    min-width: 120px !important;
 }
 
-.baseTargetThTable {
-    width: 120px !important;
+th.baseTargetThTable {
+    min-width: 120px !important;
 }
 
 .blockThTable {
@@ -100,12 +92,12 @@ table th {
 }
 
 .leftTable {
-    width: 200px !important;
+    width: 250px !important;
     float: left;
 }
 
 .rightTable {
-    width: calc(100% - 280px) !important;
+    width: calc(100% - 330px) !important;
     float: right;
 }
 
@@ -157,4 +149,87 @@ footer {
 .greenText i,
 .redText i {
     font-size: 17px !important;
+}
+
+.showDate {
+    margin-left: 50px;
+}
+
+table i {
+    vertical-align: middle;
+}
+
+table th .tbHeaderDiv i {
+    font-size: 40px !important;
+}
+
+.sideTitle,
+table .tbHeader {
+    border-bottom: 2px solid #aaa;
+}
+
+table .tbHeaderDiv {
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: .02em;
+    margin: 24px 0 16px;
+}
+
+table .tbHeaderPagination {
+    line-height: 1;
+    letter-spacing: .02em;
+    margin: 27px 15px 16px;
+}
+
+.bigIcons {
+    font-size: 30px !important;
+}
+
+.winnersBackgroundDiv {
+    background-image: url('/ui/images/finishline.png');
+    background-repeat: no-repeat;
+    background-position: center bottom;
+    width: 100%;
+    margin-top: 20px;
+    flex: 1;
+    display: flex;
+}
+
+.winnersTableDiv {
+    background-color: #fff;
+    margin-top: 20px;
+    margin-right: 50px;
+    margin-bottom: 20px;
+    padding: 30px;
+    border-radius: 4px;
+
+    font-weight: 700;
+    line-height: 24px;
+    color: rgba(0, 0, 0, .54);
+}
+
+.winnersTableDiv div {
+    padding: 10px;
+}
+
+.showWinnersDetails {
+    padding-left: 50px;
+    font-size: 18px;
+}
+
+.clearDiv {
+    clear: both;
+}
+
+.firstWinner {
+    color: rgb(255,64,129);
+}
+
+.restWinners {
+    color: rgba(95, 156, 199, 1);
+}
+
+table td a.winnerPoolLink {
+    color: rgba(0, 0, 0, .54) !important;
 }

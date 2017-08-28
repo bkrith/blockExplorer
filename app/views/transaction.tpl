@@ -2,10 +2,11 @@
 <div class="tableDiv">
     <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
         <thead>
-          <tr>
-            <th class="mdl-data-table__cell--non-numeric blockThTable"><h6><strong>Transaction #{{ @transaction.transaction }}</strong></h6></th>
-            <th class="mdl-data-table__cell--non-numeric"></th>
-          </tr>
+            <tr>
+                <th class="mdl-data-table__cell--non-numeric tbHeader" colspan="2">
+                    <div class="tbHeaderDiv floatLeft"><i class="material-icons">swap_horiz</i> Transaction #{{ @transaction.transaction }}</div>
+                </th>
+            </tr>
         </thead>
         <tbody> 
             <tr>

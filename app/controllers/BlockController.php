@@ -4,10 +4,11 @@
     class BlockController {
 
         function block($f3) {
-            $blocks = new Block($f3);
+            $blocks = new Block();
 
             $id = $f3->get('PARAMS.block');
             $f3->set('block', $blocks->getById($id));
+            $f3->set('title', $f3->get('mainTitle') . ' :: Block ' . $f3->get('block')['block']);
 
             echo \Template::instance()->render('header.tpl');
             echo \Template::instance()->render('topbar.tpl');
@@ -16,11 +17,20 @@
             echo \Template::instance()->render('footer.tpl');
         }
 
+        function blocks($f3) {
+            $blocks = new Block();
+            $page = $f3->get('PARAMS.page');
+            $f3->set('blocks', $blocks->getBlockPage($page));
+
+            echo \Template::instance()->render('blocks.tpl');
+        }
+
         function height($f3) {
-            $blocks = new Block($f3);
+            $blocks = new Block();
 
             $height = $f3->get('PARAMS.height');
             $f3->set('block', $blocks->getByHeight($height));
+            $f3->set('title', $f3->get('mainTitle') . ' :: Block #' . $f3->get('block')['height']);
 
             echo \Template::instance()->render('header.tpl');
             echo \Template::instance()->render('topbar.tpl');

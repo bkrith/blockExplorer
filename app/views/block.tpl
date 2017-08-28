@@ -3,8 +3,9 @@
         <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
             <thead>
               <tr>
-                <th class="mdl-data-table__cell--non-numeric blockThTable"><h6><strong>Block #{{ @block.block }}</strong></h6></th>
-                <th class="mdl-data-table__cell--non-numeric"></th>
+                <th class="mdl-data-table__cell--non-numeric tbHeader" colspan="2">
+                    <div class="tbHeaderDiv floatLeft"><i class="material-icons">view_carousel</i> Block #{{ @block.block }}</div>
+                </th>
               </tr>
             </thead>
             <tbody> 
@@ -78,7 +79,9 @@
             <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
                 <thead>
                     <tr>
-                        <th class="mdl-data-table__cell--non-numeric" colspan="6"><h6><strong>{{ @block.numberOfTransactions }} Block Transactions</strong></h6></th>
+                        <th class="mdl-data-table__cell--non-numeric tbHeader" colspan="6">
+                            <div class="tbHeaderDiv floatLeft"><i class="material-icons">swap_horiz</i> {{ @block.numberOfTransactions }} Transactions</div>
+                        </th>
                     </tr>
                     <tr>
                         <th class="mdl-data-table__cell--non-numeric">ID</th>

@@ -6,13 +6,13 @@
         private $wallet = '';
         private $timeSeed = 0;
 
-        public function __construct($f3) {
-            $this->wallet = $f3->get('wallet');
-            $this->timeSeed = $f3->get('timeSeed');
+        public function __construct() {
+            $this->wallet = \Base::instance()->get('wallet');
+            $this->timeSeed = \Base::instance()->get('timeSeed');
         }
 
         public function getAccount($id) {
-            $account = json_decode(file_get_contents($this->wallet . '/burst?requestType=getAccount&account=' . $id), true);
+            $account = json_decode(file_get_contents($this->wallet . '/burst?requestType=getAccount&account=' . strtoupper($id)), true);
 
             if ($account['errorCode'] == null) {
                 $infos = $this->getBalanceInfos($id);
@@ -20,7 +20,7 @@
                 $account['totalReceive'] = $infos['totalReceive'];
                 $account['totalSent'] = $infos['totalSent'];
                 $account['countTransactions'] = $infos['countTransactions'];
-                $account['forgedBlocks'] = $this->formatBlocks($this->getAccountBlocks($id)['blocks']);
+                $account['forgedBlocks'] = $this->formatForgedBlocks($this->getAccountBlocks($id)['blocks']);
 
                 return $this->formatAccount($account);
             }
@@ -30,7 +30,7 @@
         }
 
         public function justAccount($id) {
-            $account = json_decode(file_get_contents($this->wallet . '/burst?requestType=getAccount&account=' . $id), true);
+            $account = json_decode(file_get_contents($this->wallet . '/burst?requestType=getAccount&account=' . strtoupper($id)), true);
 
             if ($account['errorCode'] == null) {
                 return $account;
@@ -44,23 +44,24 @@
         // Util Functions
 
         private function getTransactionsCount($account) {
-            $count = count(json_decode(file_get_contents($this->wallet . '/burst?requestType=getAccountTransactionIds&firstIndex=0&lastIndex=99&account=' . $account), true)['transactionIds']);
+            $count = count(json_decode(file_get_contents($this->wallet . '/burst?requestType=getAccountTransactionIds&account=' . $account), true)['transactionIds']);
 
             return $count;
         }
 
+
         private function getAccountBlocks($account) {
-            $blocks = json_decode(file_get_contents($this->wallet . '/burst?requestType=getAccountBlocks&account=' . $account), true);
+            $blocks = json_decode(file_get_contents($this->wallet . '/burst?requestType=getAccountBlocks&firstIndex=0&lastIndex=9&account=' . $account), true);
 
             return $blocks;
         }
 
         private function getBalanceInfos($account) {
-            $transactions = json_decode(file_get_contents($this->wallet . '/burst?requestType=getAccountTransactions&firstIndex=0&lastIndex=99&account=' . $account . '&firstIndex=0&lastIndex=' . $count), true);
-            $count = count($transactions['transactions']);
+            $transactions = new Transaction();
             $totalReceive = 0;
             $totalSent = 0;
 
+            /*
             if ($transactions['transactions']) {
                 foreach($transactions['transactions'] as $key => $value) {
                     if ($value['amountNQT'] == 0) {
@@ -68,22 +69,19 @@
                     }
                     else if ($transactions['transactions'][$key]['sender'] == $account || $transactions['transactions'][$key]['senderRS'] == $account) {
                         $totalSent += $value['amountNQT'];
-                        $value['move'] = 'redText';
                     }
                     else {
                         $totalReceive += $value['amountNQT'];
-                        $value['move'] = 'greenText';
                     }
-
-                    $transactions['transactions'][$key] = $this->formatTransaction($value);
                 }
             }
+            */
 
             return array(
-                'transactions' => $transactions['transactions'],
+                'transactions' => $transactions->getTransactionPage($account, 1)['transactions'],
                 'totalReceive' => $totalReceive,
                 'totalSent' => $totalSent,
-                'countTransactions' => $count
+                'countTransactions' => $this->getTransactionsCount($account)
             );
         }
 
@@ -98,24 +96,17 @@
             return $account;
         }
 
-        private function formatTransaction($transaction) {
-            $transaction['amountNQT'] = number_format($transaction['amountNQT'] / 100000000, 2, '.', "'");
-            $transaction['timestamp'] = date('Y-m-d H:i:s', $this->timeSeed + $transaction['timestamp']);
-
-            return $transaction;
-        }
-
-        private function formatBlocks($blocks) {
+        private function formatForgedBlocks($blocks) {
             if ($blocks) {
                 foreach($blocks as $key => $value) {
-                    $blocks[$key] = $this->formatBlock($value);
+                    $blocks[$key] = $this->formatForgedBlock($value);
                 }
             }
 
             return $blocks;
         }
 
-        private function formatBlock($block) {
+        private function formatForgedBlock($block) {
             $block['blockReward'] = number_format($block['blockReward'], 2, '.', "'");
             $block['totalFeeNQT'] = number_format($block['totalFeeNQT'] / 100000000, 2, '.', "'");
             $block['timestamp'] = date('Y-m-d H:i:s', $this->timeSeed + $block['timestamp']);

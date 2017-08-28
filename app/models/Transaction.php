@@ -6,9 +6,9 @@
         private $wallet = '';
         private $timeSeed = 0;
 
-        public function __construct($f3) {
-            $this->wallet = $f3->get('wallet');
-            $this->timeSeed = $f3->get('timeSeed');
+        public function __construct() {
+            $this->wallet = \Base::instance()->get('wallet');
+            $this->timeSeed = \Base::instance()->get('timeSeed');
         }
 
         public function getTransaction($transaction) {
@@ -16,6 +16,22 @@
             
             if ($transaction['errorCode'] == null) {
                 return $this->formatTransaction($transaction);
+            }
+            else {
+                return null;
+            }
+        }
+
+        public function getTransactionPage($account, $page) {
+            if ($page > 0) $page = $page - 1;
+            $transactions = json_decode(file_get_contents($this->wallet . '/burst?requestType=getAccountTransactions&firstIndex=' . ($page * 20) . '&lastIndex=' . (($page * 20) + 19) . '&account=' . $account), true);
+            
+            if ($transactions['errorCode'] == null) {
+                foreach($transactions['transactions'] as $key => $value) {
+                    $transactions['transactions'][$key] = $this->formatTransaction($value, $account); 
+                }
+
+                return $transactions;
             }
             else {
                 return null;
@@ -36,7 +52,7 @@
 
         // Util Functions
 
-        private function formatTransaction($transaction) {
+        private function formatTransaction($transaction, $account = null) {
             $transaction['amountNQT'] = number_format($transaction['amountNQT'] / 100000000, 2, '.', "'");
             $transaction['feeNQT'] = $transaction['feeNQT'] / 100000000;
             $transaction['timestamp'] = date('Y-m-d H:i:s', $this->timeSeed + $transaction['timestamp']);
@@ -45,6 +61,16 @@
 
             if ($transaction['amountNQT'] <= 0) $transaction['amountNQT'] = 0;
             if ($transaction['feeNQT'] <= 0) $transaction['feeNQT'] = 0;
+
+            if ($transaction['amountNQT'] == 0) {
+                $transaction['move'] = '';
+            }
+            else if ($transaction['sender'] == $account || $transaction['senderRS'] == $account) {
+                $transaction['move'] = 'redText';
+            }
+            else {
+                $transaction['move'] = 'greenText';
+            }
 
             if (trim($transaction['attachment']['message']) == '') $transaction['attachment']['message'] = '-';
             if (trim($transaction['attachment']['version.Message']) == '') $transaction['attachment']['version.Message'] = '-';

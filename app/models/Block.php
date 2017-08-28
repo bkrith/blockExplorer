@@ -6,31 +6,29 @@
         private $wallet = '';
         private $timeSeed = 0;
         private $blocks = null;
-        private $f3 = null;
 
-        public function __construct($f3) {
-            $this->wallet = $f3->get('wallet');
-            $this->timeSeed = $f3->get('timeSeed');
-            $this->f3 = $f3;
+        public function __construct() { 
+            $this->wallet = \Base::instance()->get('wallet');
+            $this->timeSeed = \Base::instance()->get('timeSeed');
         }
 
-        public function all($page) {
+        public function getBlockPage($page) {
             if ($page > 0) $page = $page - 1;
-            
-            $this->blocks = json_decode(file_get_contents($this->wallet . '/burst?requestType=getBlocks&firstIndex=' . ($page * 100) . '&lastIndex=' . (($page * 100) + 99)), true);
 
-            return $this->formatBlocks();
+            $this->blocks = $this->getApi($this->wallet . '/burst?requestType=getBlocks&firstIndex=' . ($page * 100) . '&lastIndex=' . (($page * 100) + 99));
+
+            return $this->formatBlocks()['blocks'];
         }
 
         public function getLastBlock() {
-            $status = json_decode(file_get_contents($this->wallet . '/burst?requestType=getBlockchainStatus'), true);
-            $lastBlockHeight = json_decode(file_get_contents($this->wallet . '/burst?requestType=getBlock&block=' . $status['lastBlock']), true)['height'];
+            $status = $this->getApi($this->wallet . '/burst?requestType=getBlockchainStatus');
+            $lastBlockHeight = $this->getApi($this->wallet . '/burst?requestType=getBlock&block=' . $status['lastBlock'])['height'];
             
             return $lastBlockHeight;
         }
 
         public function getByHeight($height) {
-            $block = json_decode(file_get_contents($this->wallet . '/burst?requestType=getBlock&height=' . $height . '&includeTransactions=true'), true);
+            $block = $this->getApi($this->wallet . '/burst?requestType=getBlock&height=' . $height . '&includeTransactions=true');
             
             if ($block['errorCode'] == null) {
                 $block = $this->formatBlock(true, $block);
@@ -44,7 +42,7 @@
         }
 
         public function justByHeight($height) {
-            $block = json_decode(file_get_contents($this->wallet . '/burst?requestType=getBlock&height=' . $height . '&includeTransactions=true'), true);
+            $block = $this->getApi($this->wallet . '/burst?requestType=getBlock&height=' . $height . '&includeTransactions=true');
             
             if ($block['errorCode'] == null) {
                 return $block;
@@ -55,7 +53,7 @@
         }
 
         public function getById($id) {
-            $block = json_decode(file_get_contents($this->wallet . '/burst?requestType=getBlock&block=' . $id . '&includeTransactions=true'), true);
+            $block = $this->getApi($this->wallet . '/burst?requestType=getBlock&block=' . $id . '&includeTransactions=true');
             
             if ($block['errorCode'] == null) {
                 $block = $this->formatBlock(true, $block);
@@ -69,7 +67,7 @@
         }
 
         public function justById($id) {
-            $block = json_decode(file_get_contents($this->wallet . '/burst?requestType=getBlock&block=' . $id . '&includeTransactions=true'), true);
+            $block = $this->getApi($this->wallet . '/burst?requestType=getBlock&block=' . $id . '&includeTransactions=true');
             
             if ($block['errorCode'] == null) {                
                 return $block;
@@ -79,14 +77,18 @@
             }
         }
 
-        public function getBlocksForPool() {
-            $this->blocks = json_decode(file_get_contents($this->wallet . '/burst?requestType=getBlocks&firstIndex=0&lastIndex=10'), true);
+        public function getWinners() {
+            $this->blocks = $this->getApi($this->wallet . '/burst?requestType=getBlocks&firstIndex=0&lastIndex=9');
 
-            return $this->formatBlocks(true);
+            return $this->formatBlocks(true)['blocks'];
         }
 
 
         // Util Functions
+
+        private function getApi($url) { 
+            return json_decode(file_get_contents($url), true);
+        }
 
         private function formatBlocks($forPools = false) {
             foreach($this->blocks['blocks'] as $key => $value) {
@@ -103,14 +105,15 @@
                 $block['generationTime'] = $this->findBlockTimestamp($block['height'] - 1, $single);
                 $block['generationTime'] = date('i:s', $block['timestamp'] - $block['generationTime']);
 
-                $account = new Account($this->f3);
+                $account = new Account();
                 $block['generatorName'] = $account->justAccount($block['generator'])['name'];
-                $poolId = json_decode(file_get_contents($this->wallet . '/burst?requestType=getAccountTransactions&account=' . $block['generator'] . '&type=20&firstIndex=0&lastIndex=0'), true)['transactions'][0]['recipient'];
+                $poolId = $this->getApi($this->wallet . '/burst?requestType=getAccountTransactions&account=' . $block['generator'] . '&type=20&firstIndex=0&lastIndex=0')['transactions'][0]['recipient'];
                 if ($block['generator'] == $poolId) {
                     $block['poolName'] = 'Solo Miners';
                 }
                 else {
                     $block['poolName'] = $account->justAccount($poolId)['name'];
+                    if (trim($block['poolName']) == '') $block['poolName'] = 'Solo Miners';
                 }
             }
             $block['timestamp'] = date('Y-m-d H:i:s', $this->timeSeed + $block['timestamp']);
@@ -123,7 +126,8 @@
             if ($block['totalFeeNQT'] <= 0) $block['totalFeeNQT'] = 0;
 
             if ($forPools) {
-                $block['netDiff'] = intval(18325193796 / intval($block['baseTarget']));
+                if ($block['baseTarget'] > 0) $block['netDiff'] = intval(18325193796 / intval($block['baseTarget']));
+                else $block['netDiff'] = 0;
             }
 
             return $block;
@@ -134,7 +138,7 @@
                 return $this->justByHeight($height)['timestamp']; 
             }
             else {
-                foreach($this->blocks['blocks'] as $block) {
+                foreach($this->blocks as $block) {
                     if ($block['height'] == $height) return $block['timestamp'];
                 }
             }

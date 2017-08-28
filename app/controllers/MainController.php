@@ -5,35 +5,14 @@
 
         function home($f3) {
             $page = $f3->get('PARAMS.page');
-            if ($page <= 0) {
-                $page = 1;
-                $previousPage = 1;
-            }
-            else {
-                $previousPage = $page - 1;
-            }
 
-            $blocks = new Block($f3);
-            $f3->set('blocks', $blocks->all($page));
+            $blocks = new Block();
+            $f3->set('blocks', $blocks->getBlockPage($page));
 
-            $maxBlock = $blocks->getLastBlock();
-            $lastPage = intval($maxBlock / 100);
-            if ($lastPage < ($maxBlock / 100)) $lastPage = $lastPage + 1;
-
-            if ($page >= $lastPage) {
-                $page = $lastPage;
-            }
-            else {
-                $nextPage = $page + 1;
-            }
-
-            $f3->set('previousPage', $previousPage);
-            $f3->set('nextPage', $nextPage);
-            $f3->set('lastPage', $lastPage);
+            $f3->set('title', $f3->get('mainTitle'));
 
             echo \Template::instance()->render('header.tpl');
             echo \Template::instance()->render('topbar.tpl');
-            echo \Template::instance()->render('pagination.tpl');
             echo \Template::instance()->render('home.tpl');
             echo \Template::instance()->render('footer.tpl');
         }
@@ -42,25 +21,27 @@
             $search = $f3->get('PARAMS.search');
             $item = $f3->get('PARAMS.item');
             if ($item == 'block') {
-                $block = new Block($f3);
+                $block = new Block();
                 echo $block->justById($search)['block'];
             }
             else if ($item == 'height') {
-                $block = new Block($f3);
+                $block = new Block();
                 echo $block->justByHeight($search)['height'];
             }
             else if ($item == 'account') {
-                $account = new Account($f3);
+                $account = new Account();
                 if (is_numeric($search)) echo $account->justAccount($search)['account'];
                 else echo $account->justAccount($search)['accountRS'];
             }
             else if ($item == 'transaction') {
-                $transaction = new Transaction($f3);
+                $transaction = new Transaction();
                 echo $transaction->justTransaction($search)['transaction'];
             }
         }
 
-        function notFound() {
+        function notFound($f3) {
+            $f3->set('title', $f3->get('mainTitle') . ' :: Not found');
+
             echo \Template::instance()->render('header.tpl');
             echo \Template::instance()->render('topbar.tpl');
             echo \Template::instance()->render('404.tpl');

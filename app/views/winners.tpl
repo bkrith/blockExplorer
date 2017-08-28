@@ -7,7 +7,7 @@
                     {{ @ctr }}. {{ @winner.poolName == 'Solo Miner'?'Solo Miners':@winner.poolName }}
                 </div>
                 <div class="floatRight {{ @ctr == 1?'firstWinner':'' }} {{ (@ctr > 1 && @ctr < 4)?'restWinners':'' }}">
-                    {{ @winner.wins }}
+                    {{ @winner.wins }} blocks
                 </div>
             </repeat>
         </div>

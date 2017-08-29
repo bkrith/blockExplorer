@@ -32,7 +32,7 @@
             <check if="{{ @isWinners || @isSettings }}">
                 <true>
                     <div>
-                        <a id="settingsLink" href="#" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon">
+                        <a id="settingsLink" href="{{ @BASE }}/winners/settings" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon">
                             <i class="material-icons">settings</i>
                         </a>
                     </div>
@@ -143,10 +143,6 @@
         }; // check for old blocks and erase them
 
         clean();
-
-        $('#settingsLink').on('click', (event) => {
-            event.preventDefault();
-        });
 
         document.getElementById('searchFld').addEventListener('keypress', (event) => {
             if (event.keyCode === 13) {

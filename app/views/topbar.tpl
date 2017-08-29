@@ -3,7 +3,7 @@
     <header class="mdl-layout__header">
         <div class="mdl-layout__header-row">
             <!-- Title -->
-            <check if="{{ @isWinners }}">
+            <check if="{{ @isWinners || @isSettings }}">
                 <true>
                     <span class="mdl-layout-title"><a href="{{ @BASE }}/winners">{{ @winnersTitle }}</a></span>
                 </true>
@@ -11,7 +11,7 @@
                     <span class="mdl-layout-title"><a href="{{ @BASE }}">{{ @mainTitle }}</a></span>
                 </false>
             </check>
-            <span class="mdl-layout--large-screen-only showDate" id="clockbox">{{ date('l, F d, Y H:i:s') }}</span>
+            <span class="mdl-layout--large-screen-only showDate" id="clockbox"></span>
             <check if="{{ @isWinners }}">
                 <true>
                     <span class="showWinnersDetails">{{ @countWinBlocks }} Blocks today | Current block #{{ @blocks[0].height + 1 }}</span>
@@ -29,13 +29,22 @@
                         id="searchFld">
                 </div>
             </div>
+            <check if="{{ @isWinners || @isSettings }}">
+                <true>
+                    <div>
+                        <a id="settingsLink" href="#" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon">
+                            <i class="material-icons">settings</i>
+                        </a>
+                    </div>
+                </true>
+            </check>
         </div>
     </header>
 
     <div class="mdl-layout__drawer">
         <span class="mdl-layout-title sideTitle">Burst tools</span>
         <nav class="mdl-navigation">
-            <check if="{{ @isWinners }}">
+            <check if="{{ @isWinners || @isSettings }}">
                 <true>
                     <a class="mdl-navigation__link" href="{{ @BASE }}"><i class="material-icons bigIcons">view_day</i> Burst Explorer</a>
                 </true>
@@ -54,23 +63,90 @@
         tmonth=new Array("January","February","March","April","May","June","July","August","September","October","November","December");
 
         let GetClock = () => {
-            let d=new Date();
-            let nday=d.getDay(),nmonth=d.getMonth(),ndate=d.getDate(),nyear=d.getFullYear();
-            let nhour=d.getHours(),nmin=d.getMinutes(),nsec=d.getSeconds();
-            if(nmin<=9) nmin="0"+nmin
-            if(nsec<=9) nsec="0"+nsec;
+            let sd = new Date();
 
-            document.getElementById('clockbox').innerHTML=""+tday[nday]+", "+tmonth[nmonth]+" "+ndate+", "+nyear+" "+nhour+":"+nmin+":"+nsec+"";
+            let utc = sd.getTime() + (sd.getTimezoneOffset() * 60000);
+
+            let d = new Date(utc + (3600000 * 3));
+            
+            let nday = d.getDay(),
+                nmonth = d.getMonth(),
+                ndate = d.getDate(),
+                nyear = d.getFullYear();
+            let nhour = d.getHours(),
+                nmin = d.getMinutes(),
+                nsec = d.getSeconds();
+
+            if(nmin <= 9) nmin = "0"+nmin
+            if(nsec <= 9) nsec = "0"+nsec;
+
+            document.getElementById('clockbox').innerHTML = tday[nday]+", "+tmonth[nmonth]+" "+ndate+", "+nyear+" "+nhour+":"+nmin+":"+nsec;
         }
 
         window.onload=() => {
             GetClock();
             setInterval(GetClock,1000);
+            setInterval(refresh, 5000);
         }
 
-        setTimeout(() => {
-            if (isSearching == false && $('#searchFld').attr('isWinners') == true) location.reload();
-        }, 60000) // refreshing every minute
+        let refresh = () => {
+            if ($('#searchFld').attr('isWinners') == true) {
+                $.ajax({
+                    url: '/blockchain/status',
+                    error: () => {
+                        console.log('no access to app api');
+                    },
+                    success: (blockchainData) => {
+                        let chainHeight = JSON.parse(blockchainData).lastBlockchainFeederHeight;
+
+                        console.log('Blockchain status: ' + chainHeight);
+
+                        $.ajax({
+                            url: '/mining/info',
+                            error: () => {
+                                console.log('no access to app api');
+                            },
+                            success: (miningData) => {
+                                let walletHeight = JSON.parse(miningData).height - 1;
+                                let winnersHeight = parseInt('{{ @blocks[0].height}}');
+
+                                console.log('Wallet status: ' + walletHeight);
+                                console.log('Winners status: ' + winnersHeight);
+                                
+                                if (walletHeight == chainHeight) {
+                                    if (walletHeight > winnersHeight) {
+                                        if (isSearching == false && $('#searchFld').attr('isWinners') == true) location.reload();
+                                    }
+                                }
+                                else {
+                                    console.log('Waiting.. (We are in forked chain!)');
+                                }
+                            }
+                        });
+                    }
+                });
+            }
+        }; // check status for forked and refresh blocks
+
+        let clean = () => {
+            if ($('#searchFld').attr('isWinners') == true) {
+                $.ajax({
+                    url: '/clean',
+                    error: () => {
+                        console.log('no access to app api');
+                    },
+                    success: (cleanData) => {
+                        console.log(JSON.parse(cleanData));
+                    }
+                });
+            }
+        }; // check for old blocks and erase them
+
+        clean();
+
+        $('#settingsLink').on('click', (event) => {
+            event.preventDefault();
+        });
 
         document.getElementById('searchFld').addEventListener('keypress', (event) => {
             if (event.keyCode === 13) {

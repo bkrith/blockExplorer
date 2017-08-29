@@ -222,6 +222,7 @@ table .tbHeaderPagination {
     clear: both;
 }
 
+/*
 .firstWinner {
     color: rgb(255,64,129);
 }
@@ -229,7 +230,25 @@ table .tbHeaderPagination {
 .restWinners {
     color: rgba(95, 156, 199, 1);
 }
+*/
 
 table td a.winnerPoolLink {
     color: rgba(0, 0, 0, .54) !important;
+}
+
+.classicColor {
+    color: rgba(0, 0, 0, .54) !important;
+}
+
+.settingsDiv {
+    padding: 20px;
+}
+
+.settingsDiv span {
+    margin-left: 20px;
+}
+
+.settingsDiv div.mdl-menu__container {
+    max-height: 350px !important;
+    overflow-y: scroll;
 }

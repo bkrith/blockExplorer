@@ -5,7 +5,6 @@
 
         private $wallet = '';
         private $timeSeed = 0;
-        private $previousTimestamp = 0;
 
         function winners($f3) {
             $this->wallet = $f3->get('wallet');
@@ -16,19 +15,19 @@
             $f3->set('isWinners', true);
 
             $blocks = new \DB\SQL\Mapper( \Base::instance()->get('db'), 'blocks');
-            $winBlock = $blocks->load(null, array('order' => 'height desc', 'limit' => 1));
+            $winBlock = $blocks->find(null, array('order' => 'height desc', 'limit' => 1));
 
-            $lastBlock = $winBlock->height;
+            $lastBlock = $winBlock[0]->height;
+            
             if (!$lastBlock) $lastBlock = 0;
-
 
             $this->getNewBlocks($lastBlock);
 
             $f3->set('winners', $this->topWinners($this->topWinners()));
             
-            $f3->set('blocks', $this->formatBlocks($blocks->find(array("FROM_UNIXTIME((timestamp + " . $this->timeSeed . "), '%Y-%m-%d') = CURDATE()"), array('order' => 'height desc'))));
-            $f3->set('countWinBlocks', count($f3->get('blocks')));
-
+            $f3->set('blocks', $this->formatBlocks($blocks->find(null, array('order' => 'height desc', 'limit' => 700))));
+            $f3->set('countWinBlocks', count($blocks->find(array("FROM_UNIXTIME((timestamp + " . $this->timeSeed . "), '%Y-%m-%d') = CURDATE()"), array('order' => 'height desc', 'limit' => 700))));
+            
             echo \Template::instance()->render('header.tpl');
             echo \Template::instance()->render('topbar.tpl');
             echo \Template::instance()->render('winners.tpl');
@@ -42,12 +41,55 @@
             echo \Template::instance()->render('poolBlocks.tpl');
         }
 
-        private function getBlockchainStatus() {
-            return $this->getApi($this->wallet . '/burst?requestType=getBlockchainStatus')['lastBlockchainFeederHeight'];
+        private function getLastBlock() {
+            return $this->getApi($this->wallet . '/burst?requestType=getMiningInfo')['height'];
+        }
+
+        function getBlockStatus($f3) {
+            echo json_encode($this->getApi($f3->get('wallet') . '/burst?requestType=getBlockchainStatus'));
+        }
+
+        function getMiningInfo($f3) {
+            echo json_encode($this->getApi($f3->get('wallet') . '/burst?requestType=getMiningInfo'));
+        }
+
+        function clean($f3) {
+            $blocks = new \DB\SQL\Mapper( \Base::instance()->get('db'), 'blocks');
+            $blocks->load(array("FROM_UNIXTIME((timestamp + " . $f3->get('timeSeed') . "), '%Y-%m-%d') < (CURDATE() - INTERVAL " . $f3->get('cleanPerDays') . " DAY)"));
+            
+            try {
+                while(!$blocks->dry()) {
+                    $blocks->erase();
+                    $blocks->next();
+                }
+            }
+            catch(\PDOException $e) {
+                // Do nothing
+            }
+            
+            echo json_encode(array('cleaned' => 'ok', 'count' => $blocks->count(array("FROM_UNIXTIME((timestamp + " . $f3->get('timeSeed') . "), '%Y-%m-%d') < (CURDATE() - INTERVAL " . $f3->get('cleanPerDays') . " DAY)"))));
+        }
+
+        function settings($f3) {
+            $f3->set('isSettings', true);
+            $f3->set('pools', $this->getPoolNames());
+
+            echo \Template::instance()->render('header.tpl');
+            echo \Template::instance()->render('topbar.tpl');
+            echo \Template::instance()->render('winners.settings.tpl');
+            echo \Template::instance()->render('footer.tpl');
+        }
+
+        function poolNames() {
+            echo json_encode($this->getPoolNames());
+        }
+
+        private function getPoolNames() {
+            return \Base::instance()->get('db')->exec('select distinct poolName from blocks order by poolName asc');
         }
 
         private function getNewBlocks($lastBlock) {
-            $reallyLast = $this->getBlockchainStatus();
+            $reallyLast = $this->getLastBlock();
             
             if ($lastBlock < $reallyLast) {
                 // Get the last 1000 blocks for initialize
@@ -87,32 +129,48 @@
             if ($tempBlock['baseTarget'] > 0) $tempBlock['netDiff'] = intval(18325193796 / intval($tempBlock['baseTarget']));
             else $tempBlock['netDiff'] = 0;
 
-            $tempBlock['deadline'] = intval($tempBlock['timestamp']) - intval($this->previousTimestamp);
+            $blocks = new \DB\SQL\Mapper( \Base::instance()->get('db'), 'blocks');
+            $timestamp = $blocks->find(null, array('order' => 'height desc', 'limit' => 1));
+
+            $tempBlock['deadline'] = intval($tempBlock['timestamp']) - intval($timestamp[0]->timestamp);
             $tempBlock['reward'] = $block['blockReward'];
             $tempBlock['fee'] = $block['totalFeeNQT'];
-
-            $this->previousTimestamp = $tempBlock['timestamp'];
             
-            $blocks = new \DB\SQL\Mapper( \Base::instance()->get('db'), 'blocks');
-            $blocks->reset();
-            $blocks->blockId = $tempBlock['blockId'];
-            $blocks->height = $tempBlock['height'];
-            $blocks->generator = $tempBlock['generator'];
-            $blocks->generatorRS = $tempBlock['generatorRS'];
-            $blocks->generatorName = $tempBlock['generatorName'];
-            $blocks->pool = $tempBlock['pool'];
-            $blocks->poolRS = $tempBlock['poolRS'];
-            $blocks->poolName = $tempBlock['poolName'];
-            $blocks->timestamp = $tempBlock['timestamp'];
-            $blocks->netDiff = $tempBlock['netDiff'];
-            $blocks->deadline = $tempBlock['deadline'];
-            $blocks->reward = $tempBlock['reward'];
-            $blocks->fee = $tempBlock['fee'];
-            $blocks->save();
+            try {
+                $blocks = new \DB\SQL\Mapper( \Base::instance()->get('db'), 'blocks');
+                $blocks->reset();
+                $blocks->blockId = $tempBlock['blockId'];
+                $blocks->height = $tempBlock['height'];
+                $blocks->generator = $tempBlock['generator'];
+                $blocks->generatorRS = $tempBlock['generatorRS'];
+                $blocks->generatorName = $tempBlock['generatorName'];
+                $blocks->pool = $tempBlock['pool'];
+                $blocks->poolRS = $tempBlock['poolRS'];
+                $blocks->poolName = $tempBlock['poolName'];
+                $blocks->timestamp = $tempBlock['timestamp'];
+                $blocks->netDiff = $tempBlock['netDiff'];
+                $blocks->deadline = $tempBlock['deadline'];
+                $blocks->reward = $tempBlock['reward'];
+                $blocks->fee = $tempBlock['fee'];
+                $blocks->save();
+            }
+            catch(\PDOException $e) {
+                // Do nothing
+            }
         }
 
         private function topWinners() {
-            return \Base::instance()->get('db')->exec("SELECT poolName, count(poolName) as 'wins' from blocks where FROM_UNIXTIME((timestamp + " . $this->timeSeed . "), '%Y-%m-%d') = CURDATE()  group by poolName order by wins desc limit 10");
+            $wins = \Base::instance()->get('db')->exec("SELECT poolName, count(poolName) as 'wins' from blocks where FROM_UNIXTIME((timestamp + " . $this->timeSeed . "), '%Y-%m-%d') = CURDATE()  group by poolName order by wins desc limit 10");
+            
+            if (count($wins) < 10) {
+                for ($i = count($wins); $i < 10; $i++) {
+                    $wins[$i] = array(
+                        'poolName' => 'Waiting for pool'
+                    );
+                }
+            }
+
+            return $wins;
         }
 
         private function getApi($url) { 

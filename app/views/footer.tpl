@@ -7,7 +7,7 @@
                 </div>
                 <div class="floatRight footerAlignRight">
                     Block Explorer is under GPL 3.0 | Copyright © 2017 | All rights reserved<br>
-                    credits: <a href="https://jquery.com/">jQuery</a>, <a href="https://getmdl.io/">Materialize Design Lite</a> and <a href="https://fatfreeframework.com/">Fat-Free Framework</a>
+                    credits: <a href="https://github.com/tkrotoff/jquery-simplecolorpicker">jquery-simplecolorpicker</a>, <a href="https://jquery.com/">jQuery</a>, <a href="https://getmdl.io/">Materialize Design Lite</a> and <a href="https://fatfreeframework.com/">Fat-Free Framework</a>
                 </div>
             </footer>
         </div>

@@ -13,7 +13,10 @@
 		<link rel="stylesheet" href="{{ @BASE }}/ui/css/style.css" type="text/css" />
 		<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 		<link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+		<link rel="stylesheet" href="{{ @BASE }}/ui/css/jquery.simplecolorpicker.css" type="text/css" />
+		<link rel="stylesheet" href="{{ @BASE }}/ui/css/jquery.simplecolorpicker-regularfont.css" type="text/css" />
 		<script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
 		<script src="{{ @BASE }}/ui/js/jquery-3.2.1.min.js"></script>
+		<script src="{{ @BASE }}/ui/js/jquery-simplecolorpicker/jquery.simplecolorpicker.js"></script>
 	</head>
 	<body>

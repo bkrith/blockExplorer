@@ -47,6 +47,7 @@ At first time will be need some minutes to initialize the database table.
 * [Fat-Free Framework](https://fatfreeframework.com/) - The web framework 
 * [Material Design Lite](https://getmdl.io/) - Material design for interface
 * [jQuery](https://jquery.com/) - JQuery
+* [jQuery.simplecolorpicker](https://github.com/tkrotoff/jquery-simplecolorpicker) - JQuery Color Picker
 
 ## Authors
 

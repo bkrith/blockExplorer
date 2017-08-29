@@ -49,7 +49,7 @@
         let poolNames = null;
 
         $.ajax({
-            url: '/winners/pool/names',
+            url: '/winners/top',
             error: () => {
                 console.log('no access to app api');
             },
@@ -59,12 +59,11 @@
                 let i = 1;
 
                 poolNames.forEach(function(pool) {
-                        console.log(pool.poolName);
-                        console.log(localStorage.getItem(pool.poolName));
                     if (localStorage.getItem(pool.poolName)) {
                         let str =  i + '. ' + pool.poolName;
                         $('.coloredWinner' + i).html('<strong>' + str.fontcolor(localStorage.getItem(pool.poolName)) + '</strong>');
-                        $('.coloredWinnerBlocks' + i).html($('.coloredWinnerBlocks' + i).html().fontcolor(localStorage.getItem(pool.poolName)));
+                        let str2 = $('.coloredWinnerBlocks' + i).html();
+                        $('.coloredWinnerBlocks' + i).html(str2.fontcolor(localStorage.getItem(pool.poolName)));
                     }
                     i++;
                 });
@@ -72,6 +71,8 @@
         });
     }
 
-    getColors();
+    $(document).ready(function () {
+        getColors();
+    });
 
 </script>

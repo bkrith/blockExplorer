@@ -23,7 +23,7 @@
 
             $this->getNewBlocks($lastBlock);
 
-            $f3->set('winners', $this->topWinners($this->topWinners()));
+            $f3->set('winners', $this->getTopWinners());
             
             $f3->set('blocks', $this->formatBlocks($blocks->find(null, array('order' => 'height desc', 'limit' => 700))));
             $f3->set('countWinBlocks', count($blocks->find(array("FROM_UNIXTIME((timestamp + " . $this->timeSeed . "), '%Y-%m-%d') = CURDATE()"), array('order' => 'height desc', 'limit' => 700))));
@@ -86,6 +86,24 @@
 
         private function getPoolNames() {
             return \Base::instance()->get('db')->exec('select distinct poolName from blocks order by poolName asc');
+        }
+
+        function topWinners($f3) {
+            echo json_encode(\Base::instance()->get('db')->exec("SELECT poolName, count(poolName) as 'wins' from blocks where FROM_UNIXTIME((timestamp + " . $f3->get('timeSeed') . "), '%Y-%m-%d') = CURDATE()  group by poolName order by wins desc limit 10"));
+        }
+
+        private function getTopWinners() {
+            $wins = \Base::instance()->get('db')->exec("SELECT poolName, count(poolName) as 'wins' from blocks where FROM_UNIXTIME((timestamp + " . $this->timeSeed . "), '%Y-%m-%d') = CURDATE()  group by poolName order by wins desc limit 10");
+            
+            if (count($wins) < 10) {
+                for ($i = count($wins); $i < 10; $i++) {
+                    $wins[$i] = array(
+                        'poolName' => 'Waiting for pool'
+                    );
+                }
+            }
+
+            return $wins;
         }
 
         private function getNewBlocks($lastBlock) {
@@ -157,20 +175,6 @@
             catch(\PDOException $e) {
                 // Do nothing
             }
-        }
-
-        private function topWinners() {
-            $wins = \Base::instance()->get('db')->exec("SELECT poolName, count(poolName) as 'wins' from blocks where FROM_UNIXTIME((timestamp + " . $this->timeSeed . "), '%Y-%m-%d') = CURDATE()  group by poolName order by wins desc limit 10");
-            
-            if (count($wins) < 10) {
-                for ($i = count($wins); $i < 10; $i++) {
-                    $wins[$i] = array(
-                        'poolName' => 'Waiting for pool'
-                    );
-                }
-            }
-
-            return $wins;
         }
 
         private function getApi($url) { 

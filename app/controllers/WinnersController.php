@@ -22,6 +22,7 @@
             if (!$lastBlock) $lastBlock = 0;
 
             $this->getNewBlocks($lastBlock);
+            $this->updatePools();
 
             $f3->set('winners', $this->getTopWinners());
             
@@ -72,6 +73,9 @@
 
         function settings($f3) {
             $f3->set('isSettings', true);
+
+            $this->updatePools();
+
             $f3->set('pools', $this->getPoolNames());
 
             echo \Template::instance()->render('header.tpl');
@@ -81,19 +85,85 @@
         }
 
         function poolNames() {
-            echo json_encode($this->getPoolNames());
+            echo json_encode(\Base::instance()->get('db')->exec('select * from pools order by poolName asc'));
         }
 
         private function getPoolNames() {
-            return \Base::instance()->get('db')->exec('select distinct poolName from blocks order by poolName asc');
+            return \Base::instance()->get('db')->exec('select * from pools order by poolName asc');
+        }
+
+        private function getPools() {
+            return \Base::instance()->get('db')->exec('select distinct poolName, pool, poolRS from blocks order by poolName asc');
+        }
+
+        private function updatePools() {
+            $pools = $this->getPools();
+
+            $poolTable = new \DB\SQL\Mapper( \Base::instance()->get('db'), 'pools');
+
+            foreach($pools as $pool) {
+                if ($pool['poolName'] != 'Solo Miner') {
+                    try {
+                        $poolTable->reset();
+                        $poolTable->pool = $pool['pool'];
+                        $poolTable->poolRS = $pool['poolRS'];
+                        $poolTable->poolName = $pool['poolName'];
+                        $poolTable->color = '#727272';
+
+                        $poolTable->save();
+                    }
+                    catch(\PDOException $e) {
+                        // Do nothing
+                    }
+                }
+            }
+
+            try {
+                $poolTable->reset();
+                $poolTable->pool = 1;
+                $poolTable->poolRS = 'Solo Miners';
+                $poolTable->poolName = 'Solo Miners';
+                $poolTable->color = '#727272';
+
+                $poolTable->save();
+            }
+            catch(\PDOException $e) {
+                // Do nothing
+            }
+        }
+
+        function setPoolColor($f3) {
+            $color = $f3->get('PARAMS.color');
+            $pool =$f3->get('PARAMS.pool');
+
+            if (is_numeric($color) && is_numeric($pool)) {
+                $findPool = \Base::instance()->get('db')->exec('SELECT id from pools where pool = ?', array(1 => $pool));
+                
+                $poolTable = new \DB\SQL\Mapper( \Base::instance()->get('db'), 'pools');
+
+                try {
+                    $poolTable->load(array('id = ?', $findPool[0][id]));
+                    $poolTable->color = '#' . $color;
+
+                    $poolTable->save();
+                }
+                catch(\PDOException $e) {
+                    // Do nothing
+                }
+
+                echo json_encode(array('update' => 'ok'));
+            }
+            else {
+                echo json_encode(array('update' => 'fail'));
+            }
         }
 
         function topWinners($f3) {
-            echo json_encode(\Base::instance()->get('db')->exec("SELECT poolName, count(poolName) as 'wins' from blocks where FROM_UNIXTIME((timestamp + " . $f3->get('timeSeed') . "), '%Y-%m-%d') = CURDATE()  group by poolName order by wins desc limit 10"));
+            echo json_encode(\Base::instance()->get('db')->exec("SELECT pool, poolRS, poolName, count(poolName) as 'wins' from blocks where FROM_UNIXTIME((timestamp + " . $f3->get('timeSeed') . "), '%Y-%m-%d') = CURDATE()  group by poolName order by wins desc limit 10"));
         }
 
         private function getTopWinners() {
-            $wins = \Base::instance()->get('db')->exec("SELECT poolName, count(poolName) as 'wins' from blocks where FROM_UNIXTIME((timestamp + " . $this->timeSeed . "), '%Y-%m-%d') = CURDATE()  group by poolName order by wins desc limit 10");
+            $wins = \Base::instance()->get('db')->exec("SELECT pool, poolRS, poolName, count(poolName) as 'wins' from blocks where FROM_UNIXTIME((timestamp + " . $this->timeSeed . "), '%Y-%m-%d') = CURDATE()  group by poolName order by wins desc limit 10");
             
             if (count($wins) < 10) {
                 for ($i = count($wins); $i < 10; $i++) {

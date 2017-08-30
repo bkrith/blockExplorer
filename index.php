@@ -28,7 +28,6 @@ $f3->set('db', new DB\SQL(
 	)
 ));
 */
-
 $f3->set('ONERROR',function($f3){
 	echo \Template::instance()->render('header.tpl');
 	echo \Template::instance()->render('topbar.tpl');

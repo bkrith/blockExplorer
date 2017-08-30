@@ -12,9 +12,9 @@
                 </false>
             </check>
             <span class="mdl-layout--large-screen-only showDate" id="clockbox"></span>
-            <check if="{{ @isWinners }}">
+            <check if="{{ @isWinners && 1 == 0 }}">
                 <true>
-                    <span class="showWinnersDetails">{{ @countWinBlocks }} Blocks today | Current block #{{ @blocks[0].height + 1 }}</span>
+                    <span class="showWinnersDetails">{{ @countWinBlocks }} Blocks today | Current block #{{ @blocks[0].height + 1 }} (<span id="countNext"></span>)</span>
                 </true>
             </check>
             <div class="mdl-layout-spacer"></div>
@@ -62,17 +62,64 @@
         tday=new Array("Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday");
         tmonth=new Array("January","February","March","April","May","June","July","August","September","October","November","December");
 
-        let GetClock = () => {
+        function GetClock() {
             let sd = new Date();
 
             let utc = sd.getTime() + (sd.getTimezoneOffset() * 60000);
 
-            let d = new Date(utc + (3600000 * 3));
+            let d = new Date(utc + (3600000 * 3)); // 3 is timezone
+
+            let difDate = new Date();
+            let block = '{{ @blocks[0].timestamp }}';
+            let blockSplit = block.split(' ');
+            let blockDate = blockSplit[0].split('-');
+            let blockTime = blockSplit[1].split(':');
             
-            let nday = d.getDay(),
-                nmonth = d.getMonth(),
-                ndate = d.getDate(),
-                nyear = d.getFullYear();
+            difDate.setFullYear(parseInt(blockDate[0]));
+            difDate.setMonth(parseInt(blockDate[1]) - 1);
+            difDate.setDate(parseInt(blockDate[2]));
+            difDate.setHours(blockTime[0]);
+            difDate.setMinutes(blockTime[1]);
+            difDate.setSeconds(blockTime[2]);
+
+            $('#countNext').html(toTime(new Date(((d - difDate) / 1000))));
+            $('#countNext2').html(toTime(new Date(((d - difDate) / 1000))));
+            
+            document.getElementById('clockbox').innerHTML = getDateTime(d);
+            document.getElementById('clockbox2').innerHTML = getDateTime(d);
+        }
+
+        function toTime(t) {
+            let hours = 0;
+            let mins = 0;
+            let secs = 0;
+            let output = '';
+
+            mins = parseInt(t / 60);
+            secs = t - (mins * 60);
+            if (mins > 60) {
+                hours = parseInt(mins / 60);
+                mins = mins - (hours * 60);
+            }
+
+            if (hours > 0) output = hours + ' Hours ';
+            if (mins > 0) output += mins + ' Mins ';
+            if (secs > 0) output += secs + ' Secs ';
+
+            return output;
+        }
+
+        function getDateTime(d, timeOnly = false) {
+            let output = '';
+            if (!timeOnly) {
+                let nday = d.getDay(),
+                    nmonth = d.getMonth(),
+                    ndate = d.getDate(),
+                    nyear = d.getFullYear();
+
+                output = tday[nday]+", "+tmonth[nmonth]+" "+ndate+", "+nyear+" ";
+            }
+
             let nhour = d.getHours(),
                 nmin = d.getMinutes(),
                 nsec = d.getSeconds();
@@ -80,12 +127,16 @@
             if(nmin <= 9) nmin = "0"+nmin
             if(nsec <= 9) nsec = "0"+nsec;
 
-            document.getElementById('clockbox').innerHTML = tday[nday]+", "+tmonth[nmonth]+" "+ndate+", "+nyear+" "+nhour+":"+nmin+":"+nsec;
+            output += nhour+":"+nmin+":"+nsec;
+
+            return output;
         }
 
         window.onload=() => {
-            GetClock();
-            setInterval(GetClock,1000);
+            if (!parseInt('{{ @isSettings }}')) {    
+                GetClock();
+                setInterval(GetClock,1000);
+            }
             setInterval(refresh, 5000);
         }
 
@@ -109,9 +160,6 @@
                             success: (miningData) => {
                                 let walletHeight = JSON.parse(miningData).height - 1;
                                 let winnersHeight = parseInt('{{ @blocks[0].height}}');
-
-                                console.log('Wallet status: ' + walletHeight);
-                                console.log('Winners status: ' + winnersHeight);
                                 
                                 if (walletHeight == chainHeight) {
                                     if (walletHeight > winnersHeight) {

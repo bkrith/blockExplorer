@@ -1,6 +1,8 @@
 
 body {
     color: #333 !important;
+
+    background: url('/ui/images/bg.png') center top;
 }
 
 a {
@@ -187,29 +189,20 @@ table .tbHeaderPagination {
 }
 
 .winnersBackgroundDiv {
-    background-image: url('/ui/images/finishline.png');
-    background-repeat: no-repeat;
-    background-position: center bottom;
     width: 100%;
-    margin-top: 20px;
     flex: 1;
     display: flex;
 }
 
 .winnersTableDiv {
-    background-color: #fff;
-    margin-top: 20px;
-    margin-right: 50px;
-    margin-bottom: 20px;
-    padding: 30px;
-    border-radius: 4px;
+    margin: 20px;
 
     font-weight: 700;
     line-height: 24px;
     color: rgba(0, 0, 0, .54);
 }
 
-.winnersTableDiv div {
+.winnersTableDivss div {
     padding: 10px;
 }
 
@@ -251,4 +244,101 @@ table td a.winnerPoolLink {
 .settingsDiv div.mdl-menu__container {
     max-height: 350px !important;
     overflow-y: scroll;
+}
+
+span[class^="numberList"] {
+    height: 30px;
+    width: 30px;
+    background-color: rgba(0, 0, 0, .54);
+    color: #eee;
+    font-weight: 700;
+    margin-right: 15px;
+    border-radius: 5px;
+    text-align: center;
+    line-height: 30px;
+}
+
+.cardTop {
+    width: auto !important;
+    color: rgba(0, 0, 0, .54);
+}
+
+.cardTop > .mdl-card__title {
+    height: 100px;
+    background: url('/ui/images/finishline.png') left bottom;
+}
+
+.cardTop .mdl-card__menu {
+    color: #fff;
+}
+
+.cardTop h2{
+    color: #fff;
+    font-weight: 500 !important;
+}
+
+span[class^="coloredWinnerBlocks"] {
+    white-space: nowrap;
+}
+
+.fixedIconDiv {
+    position: absolute;
+    z-index: -100px;
+}
+
+.fixedIconDiv i {
+    font-size: 300px;
+    margin-left: 20px;
+    color: rgba(0, 0, 0, .2);
+}
+
+.cardInfo {
+    width: 400px !important;
+    height: 330px;
+    margin-top: 150px;
+    color: rgba(0, 0, 0, .54);
+}
+
+.cardInfo > .mdl-card__title {
+    height: 80px;
+    background: url('/ui/images/statistics.png') center top;
+}
+
+.cardTop .mdl-card__title-text,
+.cardInfo .mdl-card__title-text {
+    background-color: #fff;
+    color: rgba(0, 0, 0, .54);
+    border-radius: 5px;
+    padding: 5px;
+}
+
+.cardTop .mdl-card__menu,
+.cardInfo .mdl-card__menu {
+    background-color: #fff;
+    color: rgba(0, 0, 0, .54);
+    border-radius: 50%;
+}
+
+.cardInfo h2{
+    font-weight: 500 !important;
+}
+
+.cardInfo .mdl-card__supporting-text p i {
+    font-size: 50px;
+}
+
+.cardInfo .mdl-card__supporting-text p {
+    text-align: center;
+    font-size: 25px;
+    font-weight: 700;
+    line-height: 25px;
+}
+
+.mdl-card i {
+    vertical-align: middle;
+}
+
+#clockbox2 {
+    font-size: 20px;
+    margin-left: 0 !important;
 }

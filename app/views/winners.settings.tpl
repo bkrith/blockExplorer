@@ -28,12 +28,12 @@
         <option value="#cd74e6">#cd74e6</option>
         <option value="#a47ae2">#a47ae2</option>
     </select>
-    <button id="selectPool" poolSelection="" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--primary">
+    <button id="selectPool" poolSelection="" addressid="" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--primary">
             Select Pool
     </button>
     <ul class="mdl-menu mdl-menu--bottom-left mdl-js-menu mdl-js-ripple-effect" for="selectPool">
         <repeat group="{{ @pools }}" value="{{ @pool }}" counter="{{ @ctr }}">
-            <li id="poolNameLink{{ @ctr }}" class="mdl-menu__item mdl-menu__item--full-bleed-divider" name="{{ @pool.poolName }}">{{ @pool.poolName }}</li>
+            <li id="poolNameLink{{ @ctr }}" class="mdl-menu__item mdl-menu__item--full-bleed-divider" addressid="{{ @pool.pool }}" name="{{ @pool.poolName }}">{{ @pool.poolName }}</li>
         </repeat>
     </ul>
     <button id="submitColor" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--accent">
@@ -50,7 +50,7 @@
             <tbody> 
                 <repeat group="{{ @pools }}" value="{{ @pool }}" counter="{{ @ctr }}">
                     <tr>
-                        <td id="sampleText{{ @ctr }}" class="mdl-data-table__cell--non-numeric"><strong>{{ @pool.poolName }}</strong></td>
+                        <td id="{{ @pool.pool }}"  class="mdl-data-table__cell--non-numeric"><strong>{{ @pool.poolName }}</strong></td>
                     </tr>
                 </repeat>
             </tbody>
@@ -67,36 +67,36 @@
     $("li[id^=poolNameLink]").click(function () {
         $('#selectPool').html($(this).attr('name'));
         $('#selectPool').attr('poolSelection', $(this).attr('name'));
+        $('#selectPool').attr('addressid', $(this).attr('addressid'));
     });
 
     $("#submitColor").click(function () {
-        if ($('#selectPool').attr('poolSelection') != '') {
-            localStorage.setItem($('#selectPool').html(), $('select[name="colorpicker-longlist"]').val());
+        if ($('#selectPool').attr('addressid') != '') {
+            localStorage.setItem($('#selectPool').attr('addressid'), $('select[name="colorpicker-longlist"]').val());
         }
         getColors();
     });
 
     function getColors() {
-        let poolNames = null;
-
         $.ajax({
             url: '/winners/pool/names',
             error: () => {
                 console.log('no access to app api');
             },
-            success: (pools) => {
-                poolNames = JSON.parse(pools);
+            success: (poolsData) => {
+                let pools = JSON.parse(poolsData);
 
-                let i = 1;
-
-                poolNames.forEach(function(pool) {
-                        console.log(pool.poolName);
-                        console.log(localStorage.getItem(pool.poolName));
-                    if (localStorage.getItem(pool.poolName)) {
+                pools.forEach(function (pool) {
+                    if ($('#' + pool.pool).length) {
                         let str = pool.poolName;
-                        $('#sampleText' + i).html('<strong>' + str.fontcolor(localStorage.getItem(pool.poolName)) + '</strong>');
+                        
+                        if (localStorage.getItem(pool.pool)) {
+                            $('#' + pool.pool).html('<strong>' + str.fontcolor(localStorage.getItem(pool.pool)) + '</strong>');
+                        }
+                        else {
+                            $('#' + pool.pool).html('<strong>' + str.fontcolor(pool.color) + '</strong>');
+                        }
                     }
-                    i++;
                 });
             }
         });

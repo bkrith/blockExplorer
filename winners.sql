@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Aug 28, 2017 at 06:25 PM
+-- Generation Time: Aug 30, 2017 at 04:16 PM
 -- Server version: 10.1.26-MariaDB
 -- PHP Version: 7.1.8
 
@@ -45,6 +45,20 @@ CREATE TABLE `blocks` (
   `fee` bigint(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `pools`
+--
+
+CREATE TABLE `pools` (
+  `id` int(11) NOT NULL,
+  `pool` varchar(255) NOT NULL,
+  `poolRS` varchar(26) NOT NULL,
+  `poolName` varchar(100) DEFAULT NULL,
+  `color` varchar(7) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 --
 -- Indexes for dumped tables
 --
@@ -57,6 +71,13 @@ ALTER TABLE `blocks`
   ADD UNIQUE KEY `height` (`height`);
 
 --
+-- Indexes for table `pools`
+--
+ALTER TABLE `pools`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `pool` (`pool`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -64,7 +85,12 @@ ALTER TABLE `blocks`
 -- AUTO_INCREMENT for table `blocks`
 --
 ALTER TABLE `blocks`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=0;COMMIT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2368;
+--
+-- AUTO_INCREMENT for table `pools`
+--
+ALTER TABLE `pools`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14501;COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

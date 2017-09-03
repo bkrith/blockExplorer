@@ -18,5 +18,6 @@
 		<script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
 		<script src="{{ @BASE }}/ui/js/jquery-3.2.1.min.js"></script>
 		<script src="{{ @BASE }}/ui/js/jquery-simplecolorpicker/jquery.simplecolorpicker.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js"></script>
 	</head>
 	<body>

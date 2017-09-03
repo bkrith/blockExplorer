@@ -19,11 +19,25 @@
                 </tr>
                 <tr>
                     <td class="mdl-data-table__cell--non-numeric blockThTable">Total Amount</td>
-                    <td class="mdl-data-table__cell--non-numeric">{{ @block.totalAmountNQT }} Burst</td>
+                    <td class="mdl-data-table__cell--non-numeric">
+                        <span class="underText" id="blockListTotalAmountNQT{{ @block.height }}">{{ @block.totalAmountNQT }} Burst</span>
+                        <div class="mdl-tooltip mdl-tooltip--large mdl-tooltip--right" for="blockListTotalAmountNQT{{ @block.height }}">
+                            BTC: {{ @market['btc'] * str_replace("'", "", @block.totalAmountNQT) }}<br>
+                            USD: {{ @market['usd'] * str_replace("'", "", @block.totalAmountNQT) }}<br>
+                            EUR: {{ @market['eur'] * str_replace("'", "", @block.totalAmountNQT) }}
+                        </div>
+                    </td>
                 </tr>
                 <tr>
                     <td class="mdl-data-table__cell--non-numeric blockThTable">Transaction Fees</td>
-                    <td class="mdl-data-table__cell--non-numeric">{{ @block.totalFeeNQT }} Burst</td>
+                    <td class="mdl-data-table__cell--non-numeric">
+                        <span class="underText" id="blockListTotalFeeNQT{{ @block.height }}">{{ @block.totalFeeNQT }} Burst</span>
+                        <div class="mdl-tooltip mdl-tooltip--large mdl-tooltip--right" for="blockListTotalFeeNQT{{ @block.height }}">
+                            BTC: {{ @market['btc'] * str_replace("'", "", @block.totalFeeNQT) }}<br>
+                            USD: {{ @market['usd'] * str_replace("'", "", @block.totalFeeNQT) }}<br>
+                            EUR: {{ @market['eur'] * str_replace("'", "", @block.totalFeeNQT) }}
+                        </div>
+                    </td>
                 </tr>
                 <tr>
                     <td class="mdl-data-table__cell--non-numeric blockThTable">Timestamp</td>
@@ -98,8 +112,22 @@
                             <td class="mdl-data-table__cell--non-numeric"><a href="{{ @BASE }}/transaction/{{ @transaction.transaction }}">{{ @transaction.transaction }}</a></td>
                             <td class="mdl-data-table__cell--non-numeric"><a href="{{ @BASE }}/account/{{ @transaction.sender }}">{{ @transaction.senderRS }}</a></td>
                             <td class="mdl-data-table__cell--non-numeric"><a href="{{ @BASE }}/account/{{ @transaction.recipient }}">{{ @transaction.recipientRS }}</a></td>
-                            <td class="mdl-data-table__cell--non-numeric">{{ @transaction.amountNQT }}</td>
-                            <td class="mdl-data-table__cell--non-numeric">{{ @transaction.feeNQT }}</td>
+                            <td class="mdl-data-table__cell--non-numeric">
+                                    <span class="underText" id="transactionAmountNQT{{ @transaction.transaction }}">{{ @transaction.amountNQT }}</span>
+                                    <div class="mdl-tooltip mdl-tooltip--large mdl-tooltip--right" for="transactionAmountNQT{{ @transaction.transaction }}">
+                                        BTC: {{ @market['btc'] * str_replace("'", "", @transaction.amountNQT) }}<br>
+                                        USD: {{ @market['usd'] * str_replace("'", "", @transaction.amountNQT) }}<br>
+                                        EUR: {{ @market['eur'] * str_replace("'", "", @transaction.amountNQT) }}
+                                    </div>
+                            </td>
+                            <td class="mdl-data-table__cell--non-numeric">
+                                    <span class="underText" id="transactionFeeNQT{{ @transaction.transaction }}">{{ @transaction.feeNQT }}</span>
+                                    <div class="mdl-tooltip mdl-tooltip--large mdl-tooltip--right" for="transactionFeeNQT{{ @transaction.transaction }}">
+                                        BTC: {{ @market['btc'] * str_replace("'", "", @transaction.feeNQT) }}<br>
+                                        USD: {{ @market['usd'] * str_replace("'", "", @transaction.feeNQT) }}<br>
+                                        EUR: {{ @market['eur'] * str_replace("'", "", @transaction.feeNQT) }}
+                                    </div>
+                            </td>
                             <td class="mdl-data-table__cell--non-numeric">{{ @transaction.timestamp }}</td>
                         </tr>
                     </repeat>

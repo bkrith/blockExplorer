@@ -71,22 +71,24 @@
 
             let difDate = new Date();
             let block = '{{ @blocks[0].timestamp }}';
-            let blockSplit = block.split(' ');
-            let blockDate = blockSplit[0].split('-');
-            let blockTime = blockSplit[1].split(':');
-            
-            difDate.setFullYear(parseInt(blockDate[0]));
-            difDate.setMonth(parseInt(blockDate[1]) - 1);
-            difDate.setDate(parseInt(blockDate[2]));
-            difDate.setHours(blockTime[0]);
-            difDate.setMinutes(blockTime[1]);
-            difDate.setSeconds(blockTime[2]);
+            if (parseInt(block)) {
+                let blockSplit = block.split(' ');
+                let blockDate = blockSplit[0].split('-');
+                let blockTime = blockSplit[1].split(':');
+                
+                difDate.setFullYear(parseInt(blockDate[0]));
+                difDate.setMonth(parseInt(blockDate[1]) - 1);
+                difDate.setDate(parseInt(blockDate[2]));
+                difDate.setHours(blockTime[0]);
+                difDate.setMinutes(blockTime[1]);
+                difDate.setSeconds(blockTime[2]);
 
-            $('#countNext').html(toTime(new Date(((d - difDate) / 1000))));
-            $('#countNext2').html(toTime(new Date(((d - difDate) / 1000))));
-            
-            document.getElementById('clockbox').innerHTML = getDateTime(d);
-            document.getElementById('clockbox2').innerHTML = getDateTime(d);
+                $('#countNext').html(toTime(new Date(((d - difDate) / 1000))));
+                $('#countNext2').html(toTime(new Date(((d - difDate) / 1000))));
+
+                document.getElementById('clockbox').innerHTML = getDateTime(d);
+                if ($('#clockbox2').length) document.getElementById('clockbox2').innerHTML = getDateTime(d);
+            }
         }
 
         function toTime(t) {

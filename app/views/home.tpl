@@ -36,8 +36,22 @@
                     <td class="mdl-data-table__cell--non-numeric heightThTable {{ @block.bold }}"><a href="{{ @BASE }}/block/{{ @block.block }}">{{ @block.height }}</a></td>
                     <td class="mdl-data-table__cell--non-numeric">{{ @block.timestamp }}</td>
                     <td class="mdl-data-table__cell--non-numeric transactionsThTable">{{ @block.numberOfTransactions }}</td>
-                    <td class="mdl-data-table__cell--non-numeric">{{ @block.totalAmountNQT }}</td>
-                    <td class="mdl-data-table__cell--non-numeric feeThTable">{{ @block.totalFeeNQT }}</td>
+                    <td class="mdl-data-table__cell--non-numeric">
+                        <span class="underText" id="blockListTotalAmountNQT{{ @block.height }}">{{ @block.totalAmountNQT }}</span>
+                        <div class="mdl-tooltip mdl-tooltip--large mdl-tooltip--right" for="blockListTotalAmountNQT{{ @block.height }}">
+                            BTC: {{ @market['btc'] * str_replace("'", "", @block.totalAmountNQT) }}<br>
+                            USD: {{ @market['usd'] * str_replace("'", "", @block.totalAmountNQT) }}<br>
+                            EUR: {{ @market['eur'] * str_replace("'", "", @block.totalAmountNQT) }}
+                        </div>
+                    </td>
+                    <td class="mdl-data-table__cell--non-numeric feeThTable">
+                        <span class="underText" id="blockListFee{{ @block.height }}">{{ @block.totalFeeNQT }}</span>
+                        <div class="mdl-tooltip mdl-tooltip--large mdl-tooltip--right" for="blockListFee{{ @block.height }}">
+                            BTC: {{ @market['btc'] * str_replace("'", "", @block.totalFeeNQT) }}<br>
+                            USD: {{ @market['usd'] * str_replace("'", "", @block.totalFeeNQT) }}<br>
+                            EUR: {{ @market['eur'] * str_replace("'", "", @block.totalFeeNQT) }}
+                        </div>
+                    </td>
                     <td class="mdl-data-table__cell--non-numeric"><a href="{{ @BASE }}/account/{{ @block.generator }}">{{ @block.generatorRS }}</a></td>
                     <td class="mdl-data-table__cell--non-numeric payloadThTable">{{ @block.payloadLength }}</td>
                     <td class="mdl-data-table__cell--non-numeric baseTargetThTable">{{ @block.baseTarget }}</td>
@@ -76,6 +90,7 @@ console.log(maxBlockPage);
                     $('#blocksTableBody').html(html);
                     BlockPage--;
                     disableBlockNav();
+                    componentHandler.upgradeAllRegistered();
                 }
             });
         }
@@ -96,6 +111,7 @@ console.log(maxBlockPage);
                     $('#blocksTableBody').html(html);
                     BlockPage++;
                     disableBlockNav();
+                    componentHandler.upgradeAllRegistered();
                 }
             });
         }
@@ -116,6 +132,7 @@ console.log(maxBlockPage);
                     $('#blocksTableBody').html(html);
                     BlockPage = 1;
                     disableBlockNav();
+                    componentHandler.upgradeAllRegistered();
                 }
             });
         }
@@ -136,6 +153,7 @@ console.log(maxBlockPage);
                     $('#blocksTableBody').html(html);
                     BlockPage = maxBlockPage;
                     disableBlockNav();
+                    componentHandler.upgradeAllRegistered();
                 }
             });
         }

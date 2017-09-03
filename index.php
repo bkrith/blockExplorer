@@ -18,16 +18,20 @@ if ((float)PCRE_VERSION<7.9)
 $f3->config('config.ini');
 
 // MySQL settings
-/*
-$f3->set('db', new DB\SQL(
-    'mysql:host=localhost;port=3306;dbname=winners',
-    'winners',
-	'12345678',
-	array( 
-		\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION 
-	)
-));
-*/
+try {
+	$f3->set('db', new DB\SQL(
+		'mysql:host=localhost;port=3306;dbname=winners',
+		'winners',
+		'12345678',
+		array( 
+			\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION 
+		)
+	));
+}
+catch(\PDOException $e) {
+	// Do nothing
+}
+
 $f3->set('ONERROR',function($f3){
 	echo \Template::instance()->render('header.tpl');
 	echo \Template::instance()->render('topbar.tpl');

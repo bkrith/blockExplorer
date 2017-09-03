@@ -110,7 +110,12 @@
                                     </check>
                                 </div>
                                 <div class="floatRight">
-                                    {{ @transaction.amountNQT }} Burst
+                                    <span class="underText" id="transactionAmountNQT{{ @transaction.transaction }}">{{ @transaction.amountNQT }} Burst</span>
+                                    <div class="mdl-tooltip mdl-tooltip--large mdl-tooltip--right" for="transactionAmountNQT{{ @transaction.transaction }}">
+                                        BTC: {{ @market['btc'] * str_replace("'", "", @transaction.amountNQT) }}<br>
+                                        USD: {{ @market['usd'] * str_replace("'", "", @transaction.amountNQT) }}<br>
+                                        EUR: {{ @market['eur'] * str_replace("'", "", @transaction.amountNQT) }}
+                                    </div>
                                 </div>
                             </td>
                             <td class="mdl-data-table__cell--non-numeric"><a href="{{ @BASE }}/account/{{ @transaction.recipient }}">{{ @transaction.recipientRS }}</a></td>
@@ -154,6 +159,7 @@
                     $('#transactionsTableBody').html(html);
                     transactionPage--;
                     disableTransactionNav();
+                    componentHandler.upgradeAllRegistered();
                 }
             });
         }
@@ -174,6 +180,7 @@
                     $('#transactionsTableBody').html(html);
                     transactionPage++;
                     disableTransactionNav();
+                    componentHandler.upgradeAllRegistered();
                 }
             });
         }
@@ -194,6 +201,7 @@
                     $('#transactionsTableBody').html(html);
                     transactionPage = 1;
                     disableTransactionNav();
+                    componentHandler.upgradeAllRegistered();
                 }
             });
         }
@@ -214,6 +222,7 @@
                     $('#transactionsTableBody').html(html);
                     transactionPage = maxTransactionPage;
                     disableTransactionNav();
+                    componentHandler.upgradeAllRegistered();
                 }
             });
         }

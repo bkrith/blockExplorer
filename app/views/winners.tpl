@@ -19,6 +19,9 @@
                     <p>
                         <span class="mdl-layout--large-screen-only showDate" id="clockbox2"></span>
                     </p>
+                    <p>
+                        <canvas id="myChart" width="600" height="300"></canvas>
+                    </p>
                 </div>
                 <div class="mdl-card__menu mdl-shadow--2dp">
                     <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
@@ -78,7 +81,21 @@
                         <td class="mdl-data-table__cell--non-numeric">{{ @block.timestamp }}</td>
                         <td class="mdl-data-table__cell--non-numeric">{{ @block.netDiff }}</td>
                         <td class="mdl-data-table__cell--non-numeric">{{ @block.deadline }}</td>
-                        <td class="mdl-data-table__cell--non-numeric">{{ @block.reward }} / {{ @block.fee }}</td>
+                        <td class="mdl-data-table__cell--non-numeric">
+                            <span id="winnerListReward{{ @block.height }}" class="underText">{{ @block.reward }}</span>
+                            <div class="mdl-tooltip mdl-tooltip--large mdl-tooltip--right" for="winnerListReward{{ @block.height }}">
+                                BTC: {{ @market['btc'] * str_replace("'", "", @block.reward) }}<br>
+                                USD: {{ @market['usd'] * str_replace("'", "", @block.reward) }}<br>
+                                EUR: {{ @market['eur'] * str_replace("'", "", @block.reward) }}
+                            </div>
+                            / 
+                            <span id="winnerListFee{{ @block.height }}" class="underText">{{ @block.fee }}</span>
+                            <div class="mdl-tooltip mdl-tooltip--large mdl-tooltip--right" for="winnerListFee{{ @block.height }}">
+                                BTC: {{ @market['btc'] * str_replace("'", "", @block.fee) }}<br>
+                                USD: {{ @market['usd'] * str_replace("'", "", @block.fee) }}<br>
+                                EUR: {{ @market['eur'] * str_replace("'", "", @block.fee) }}
+                            </div>
+                        </td>
                         <td class="mdl-data-table__cell--non-numeric"><a href="{{ @BASE }}/account/{{ @block.generator }}">{{ @block.generatorName }}<br>{{ @block.generatorRS }}</a></td>
                         <td class="mdl-data-table__cell--non-numeric bold"><a class="winnerPoolLink" href="{{ @BASE }}/account/{{ @block.pool }}">{{ @block.poolName }}</a></td>
                     </tr>
@@ -89,6 +106,48 @@
 
 
 <script>
+
+    getNetDiff();
+
+    function getNetDiff() {
+        $.ajax({
+            url: '/winners/netdiff',
+            error: () => {
+                console.log('no access to app api');
+            },
+            success: (blocksData) => {
+                let blocks = JSON.parse(blocksData);
+                
+                let ctx = document.getElementById("myChart").getContext('2d');
+                let myChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: blocks['height'],
+                    datasets: [{
+                        label: 'Network Difficulty',
+                        data: blocks['netDiff'],
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.2)',
+                        ],
+                        borderColor: [
+                            'rgba(255,99,132,1)',
+                        ],
+                        borderWidth: 1
+                    }]
+                    },
+                    options: {
+                        scales: {
+                            yAxes: [{
+                                ticks: {
+                                    beginAtZero:false
+                                }
+                            }]
+                        }
+                    }
+                });
+            }
+        });
+    }
 
     function getColors() {
         $.ajax({

@@ -17,12 +17,19 @@
             $blocks = new \DB\SQL\Mapper( \Base::instance()->get('db'), 'blocks');
             $winBlock = $blocks->find(null, array('order' => 'height desc', 'limit' => 1));
 
+            $market = new \DB\SQL\Mapper( \Base::instance()->get('db'), 'market');
+            $marketValues = $market->find(null, array('limit' => 1))[0];
+
+            $f3->set('market', $marketValues);
+
             $lastBlock = $winBlock[0]->height;
             
             if (!$lastBlock) $lastBlock = 0;
 
             $this->getNewBlocks($lastBlock);
             $this->updatePools();
+
+            $this->updateMarket();
 
             $f3->set('winners', $this->getTopWinners());
             
@@ -33,6 +40,44 @@
             echo \Template::instance()->render('topbar.tpl');
             echo \Template::instance()->render('winners.tpl');
             echo \Template::instance()->render('footer.tpl');
+        }
+
+        function updateMarket() {
+            $market = new \DB\SQL\Mapper( \Base::instance()->get('db'), 'market');
+            $marketValues = $market->load(null, array('limit' => 1))[0];
+
+            $d = new DateTime('', new DateTimeZone('Europe/Athens')); 
+            $tm = strtotime($d->format('Y-m-d H:i:s'));
+            $tm2 = strtotime(date($marketValues['timestamp']));
+
+            if (($tm - $tm2) > 3600) {
+                $cap = json_decode(file_get_contents('http://api.coinmarketcap.com/v1/ticker/burst/?convert=EUR'))[0];
+
+                $market->btc = $cap->price_btc;
+                $market->usd = $cap->price_usd;
+                $market->eur = $cap->price_eur;
+
+                $d = new DateTime('', new DateTimeZone('Europe/Athens')); 
+                $market->timestamp = $d->format('Y-m-d H:i:s');
+
+                $market->save();
+            }
+        }
+
+        function netDiff() {
+            $blocks = new \DB\SQL\Mapper( \Base::instance()->get('db'), 'blocks');
+            $lastTen = $this->formatBlocks($blocks->find(null, array('order' => 'height desc', 'limit' => 50)));
+
+            $net = [];
+            foreach($lastTen as $block) {
+                $net['height'][] = $this->formatBlock($block)['height'];
+                $net['netDiff'][] = $this->formatBlock($block)['netDiff'];
+            }
+
+            $net['height'] = array_reverse($net['height']);
+            $net['netDiff'] = array_reverse($net['netDiff']);
+
+            echo json_encode($net);
         }
 
         function pool($f3) {

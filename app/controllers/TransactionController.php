@@ -10,6 +10,11 @@
             $f3->set('transaction', $transaction->getTransaction($id));
             $f3->set('title', $f3->get('mainTitle') . ' ::  Transaction ' . $f3->get('transaction')['transaction']);
 
+            $market = new \DB\SQL\Mapper( \Base::instance()->get('db'), 'market');
+            $marketValues = $market->find(null, array('limit' => 1))[0];
+
+            $f3->set('market', $marketValues);
+
             echo \Template::instance()->render('header.tpl');
             echo \Template::instance()->render('topbar.tpl');
             if ($f3->get('transaction')) echo \Template::instance()->render('transaction.tpl');
@@ -19,6 +24,11 @@
 
         function transactions($f3) {
             $transactions = new Transaction();
+
+            $market = new \DB\SQL\Mapper( \Base::instance()->get('db'), 'market');
+            $marketValues = $market->find(null, array('limit' => 1))[0];
+
+            $f3->set('market', $marketValues);
 
             $page = $f3->get('PARAMS.page');
             $account = $f3->get('PARAMS.account');

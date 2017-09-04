@@ -347,3 +347,49 @@ span[class^="coloredWinnerBlocks"] {
     border-bottom: 1px dashed rgba(95, 156, 199, 1);
     cursor: pointer;
 }
+
+.calcsDiv {
+    display: flex;
+    margin-top: 40px;
+}
+
+.totalPlotSizeDiv {
+    width: 70% !important;
+    float: left;
+}
+
+.plotSizeDiv {
+    width: 20%;
+    float: right;
+    line-height: 70px;
+}
+
+.plotSizeList {
+    z-index: 9999;
+}
+
+.calcCard,
+.miningCard {
+    overflow: visible !important;
+    width: 450px !important;
+}
+
+.calcCard h2,
+.miningCard h2 {
+    color: rgba(0, 0, 0, .54);
+    font-weight: 500;
+}
+
+.calcCard .mdl-textfield {
+    width: 50% !important;
+}
+
+.calcCard .mdl-chip__contact {
+    width: 40px !important;
+    color: #333 !important;
+    background-color: #fff !important;
+}
+
+.calcCard .mdl-chip__text {
+    width: 150px !important;
+}

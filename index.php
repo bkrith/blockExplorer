@@ -1,8 +1,8 @@
 
 <?php
 
-error_reporting(0); // for reporting all errors set E_ALL
-ini_set('display_errors', 0); // for reporting all errors set 1
+error_reporting(E_ALL); // for reporting all errors set E_ALL
+ini_set('display_errors', 1); // for reporting all errors set 1
 ini_set("allow_url_fopen", 1);
 ini_set("date.timezone", "Europe/Athens");
 // ini_set('max_execution_time', 3000000);
@@ -32,13 +32,14 @@ catch(\PDOException $e) {
 	// Do nothing
 }
 
+/*
 $f3->set('ONERROR',function($f3){
 	echo \Template::instance()->render('header.tpl');
 	echo \Template::instance()->render('topbar.tpl');
 	echo \Template::instance()->render('404.tpl');
 	echo \Template::instance()->render('footer.tpl');
 });
-
+*/
 $f3->config('routes.ini');
 
 $f3->run();

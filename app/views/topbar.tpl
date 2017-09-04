@@ -44,14 +44,9 @@
     <div class="mdl-layout__drawer">
         <span class="mdl-layout-title sideTitle">Burst tools</span>
         <nav class="mdl-navigation">
-            <check if="{{ @isWinners || @isSettings }}">
-                <true>
-                    <a class="mdl-navigation__link" href="{{ @BASE }}"><i class="material-icons bigIcons">view_day</i> Burst Explorer</a>
-                </true>
-                <false>
-                    <a class="mdl-navigation__link" href="{{ @BASE }}/winners"><i class="material-icons bigIcons">done_all</i> Winners</a>
-                </false>
-            </check>
+            <a class="mdl-navigation__link" href="{{ @BASE }}"><i class="material-icons bigIcons">view_day</i> Burst Explorer</a>
+            <a class="mdl-navigation__link" href="{{ @BASE }}/winners"><i class="material-icons bigIcons">done_all</i> Winners</a>
+            <a class="mdl-navigation__link" href="{{ @BASE }}/calculator"><i class="material-icons bigIcons">attach_money</i> Calculator</a>
         </nav>
     </div>
 
